@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2013,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2013,2014                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -341,7 +341,7 @@ int32_t getMemBufRawCardType( TARGETING::TargetHandle_t i_mbaTarget,
                               CEN_SYMBOL::WiringType & o_wiringType );
 
 //##############################################################################
-//##                    Maintenance Command class wrapper
+//##                    Maintance Command class wrapper
 //##############################################################################
 
 /**

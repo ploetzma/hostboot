@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2011,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2011,2014                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -133,7 +133,7 @@ ALWAYS_INLINE inline uint64_t i2cGetPollingInterval(uint64_t i_bus_speed_khz )
 
 // -----------------------------------------------------------------------
 // NOTE: Host I2C is using the PIB I2C Master 'legacy' registers, which
-//       are analogous to the FSI I2C register space.
+//       are analagous to the FSI I2C register space.
 // -----------------------------------------------------------------------
 
 /**

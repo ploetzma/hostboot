@@ -5,7 +5,7 @@
 <!--                                                                        -->
 <!-- OpenPOWER HostBoot Project                                             -->
 <!--                                                                        -->
-<!-- Contributors Listed Below - COPYRIGHT 2012,2015                        -->
+<!-- Contributors Listed Below - COPYRIGHT 2012,2014                        -->
 <!-- [+] Google Inc.                                                        -->
 <!-- [+] International Business Machines Corp.                              -->
 <!--                                                                        -->
@@ -123,8 +123,8 @@
     <attribute><id>NOMINAL_FREQ_MHZ</id></attribute>
     <attribute><id>MNFG_FLAGS</id></attribute>
     <attribute><id>FABRIC_TO_PHYSICAL_NODE_MAP</id></attribute>
-    <attribute><id>MFG_TRACE_ENABLE</id></attribute>
     <!-- Start memory_attributes.xml -->
+    <attribute><id>ISDIMM_POWER_CURVE_ALGORITHM_VERSION</id></attribute>
     <attribute><id>MRW_POWER_CONTROL_REQUESTED</id></attribute>
     <attribute><id>MRW_DDR3_VDDR_MAX_LIMIT</id></attribute>
     <attribute><id>MRW_DDR4_VDDR_MAX_LIMIT</id></attribute>
@@ -282,27 +282,8 @@
     <attribute><id>MSS_DRAMINIT_RESET_DISABLE</id></attribute>
     <attribute><id>RECONFIG_LOOP_TESTS</id></attribute>
     <attribute><id>RECONFIG_LOOP_TESTS_ENABLE</id></attribute>
-    <attribute><id>ISTEP_PAUSE_ENABLE</id></attribute>
-    <attribute><id>ISTEP_PAUSE_CONFIG</id></attribute>
     <!-- IPMI Sensor numbers for reporting system status and info to the BMC -->
     <attribute><id>IPMI_SENSORS</id></attribute>
-    <!-- Manufacturing threshold Attributes of PRD -->
-    <attribute><id>MNFG_TH_P8EX_L2_CACHE_CES</id></attribute>
-    <attribute><id>MNFG_TH_P8EX_L2_DIR_CES</id></attribute>
-    <attribute><id>MNFG_TH_P8EX_L3_CACHE_CES</id></attribute>
-    <attribute><id>MNFG_TH_P8EX_L3_DIR_CES</id></attribute>
-    <attribute><id>FIELD_TH_P8EX_L2_LINE_DELETES</id></attribute>
-    <attribute><id>FIELD_TH_P8EX_L2_COL_REPAIRS</id></attribute>
-    <attribute><id>FIELD_TH_P8EX_L3_LINE_DELETES</id></attribute>
-    <attribute><id>FIELD_TH_P8EX_L3_COL_REPAIRS</id></attribute>
-    <attribute><id>MNFG_TH_P8EX_L2_LINE_DELETES</id></attribute>
-    <attribute><id>MNFG_TH_P8EX_L2_COL_REPAIRS</id></attribute>
-    <attribute><id>MNFG_TH_P8EX_L3_LINE_DELETES</id></attribute>
-    <attribute><id>MNFG_TH_P8EX_L3_COL_REPAIRS</id></attribute>
-    <attribute><id>MNFG_TH_CEN_MBA_RT_SOFT_CE_TH_ALGO</id></attribute>
-    <attribute><id>MNFG_TH_CEN_MBA_IPL_SOFT_CE_TH_ALGO</id></attribute>
-    <attribute><id>MNFG_TH_CEN_MBA_RT_RCE_PER_RANK</id></attribute>
-    <attribute><id>MNFG_TH_CEN_L4_CACHE_CES</id></attribute>
 </targetType>
 
 <targetType>
@@ -990,7 +971,7 @@
     </attribute>
     <attribute><id>DECONFIG_GARDABLE</id><default>1</default></attribute>
     <attribute><id>HWAS_STATE_CHANGED_SUBSCRIPTION_MASK</id>
-        <default>0x00000001</default> <!--GARD -->
+        <default>0x00000011</default> <!--GARD | DIMM_POWER_TEST -->
     </attribute>
     <attribute><id>MSS_DIMM_MFG_ID_CODE</id></attribute>
     <attribute><id>EFF_DIMM_RANKS_CONFIGED</id></attribute>
@@ -1366,7 +1347,7 @@
     </attribute>
     <attribute><id>DECONFIG_GARDABLE</id><default>1</default></attribute>
     <attribute><id>HWAS_STATE_CHANGED_SUBSCRIPTION_MASK</id>
-        <default>0x00000003</default> <!--GARD | MEMDIAG -->
+        <default>0x00000013</default> <!--GARD | MEMDIAG | DIMM_POWER_TEST -->
     </attribute>
     <attribute>
         <id>SCOM_SWITCHES</id>
@@ -1509,7 +1490,7 @@
     </attribute>
     <attribute><id>DECONFIG_GARDABLE</id><default>1</default></attribute>
     <attribute><id>HWAS_STATE_CHANGED_SUBSCRIPTION_MASK</id>
-        <default>0x00000003</default> <!--GARD | MEMDIAG -->
+        <default>0x00000013</default> <!--GARD | MEMDIAG | DIMM_POWER_TEST -->
     </attribute>
 
     <attribute><id>EEPROM_VPD_PRIMARY_INFO</id></attribute>
@@ -1698,9 +1679,6 @@
     </attribute>
     <attribute>
         <id>OCC_MASTER_CAPABLE</id>
-    </attribute>
-    <attribute>
-        <id>IPMI_SENSORS</id>
     </attribute>
 </targetType>
 

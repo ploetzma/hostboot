@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2013,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2013,2014                        */
 /* [+] Google Inc.                                                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
@@ -44,7 +44,7 @@ class IpVpdFacade
   public:
 
     /**
-     * @brief Miscellaneous IPVPD definitions
+     * @brief Miscelaneous IPVPD definitions
      */
     enum
     {

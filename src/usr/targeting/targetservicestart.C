@@ -53,8 +53,6 @@
 #include <errl/errlentry.H>
 #include <errl/errlmanager.H>
 #include <devicefw/userif.H>
-#include <config.h>
-
 
 //******************************************************************************
 // targetService
@@ -119,11 +117,8 @@ static void initTargeting(errlHndl_t& io_pError)
                      l_pTopLevel->getAttrAsString<ATTR_MODEL>());
         }
 
-// No error module loaded in VPO to save load time
-#ifndef CONFIG_VPO_COMPILE
         // call ErrlManager function - tell him that TARG is ready!
         ERRORLOG::ErrlManager::errlResourceReady(ERRORLOG::TARG);
-#endif
     }
 
     TARG_EXIT();

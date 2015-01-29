@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2013,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2013,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -73,7 +71,7 @@ void CenMbaUeTable::addCapData( CaptureData & io_cd )
 {
     static const size_t sz_word = sizeof(CPU_WORD);
 
-    // Get the maximum capture data size and adjust the size for endianness.
+    // Get the maximum capture data size and adjust the size for endianess.
     static const size_t sz_maxData = ((MAX_SIZE+sz_word-1) / sz_word) * sz_word;
 
     // Initialize to 0.
@@ -111,7 +109,7 @@ void CenMbaUeTable::addCapData( CaptureData & io_cd )
 
     if ( 0 != sz_actData )
     {
-        // Fix endianness issues with non PPC machines.
+        // Fix endianess issues with non PPC machines.
         sz_actData = ((sz_actData + sz_word-1) / sz_word) * sz_word;
         for ( uint32_t i = 0; i < (sz_actData/sz_word); i++ )
             ((CPU_WORD*)data)[i] = htonl(((CPU_WORD*)data)[i]);

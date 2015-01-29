@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2012,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -75,7 +73,7 @@ namespace Util
         /**
          *  Template wrapper function for the iterator advance.
          *
-         *  Uses the existence of a += operator on the iterator to determine
+         *  Uses the existance of a += operator on the iterator to determine
          *  if the random-access or non-random-access version should be used.
          */
         template <typename InputIterator, typename Distance>
@@ -130,7 +128,7 @@ namespace Util
         /**
          *  Template wrapper function for the iterator distance.
          *
-         *  Uses the existence of a - operator on the iterator to determine
+         *  Uses the existance of a - operator on the iterator to determine
          *  if the random-access or non-random-access version should be used.
          */
         template <typename InputIterator, typename Distance>

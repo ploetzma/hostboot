@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2012,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -45,11 +43,11 @@ namespace ISTEP_ERROR
      * Contains a top-level IStep failed error log.
      *
      * Isteps can perform operations on multiple components regardless of errors
-     * in order to initialize as much hardware as possible. Each IStep creates
-     * an IstepError object and for each sub-error, the addErrorDetails()
-     * function is called before the caller commits the sub-error. At the end
-     * of an IStep, the getErrorHandle() function is called to return the
-     * top-level istep error (if any) to the IStep Dispatcher.
+     * in order to initilize as much hardware as possible. Each IStep creates an
+     * IstepError object and for each sub-error, the addErrorDetails() function
+     * is called before the caller commits the sub-error. At the end of an
+     * IStep, the getErrorHandle() function is called to return the top-level
+     * istep error (if any) to the IStep Dispatcher.
      *
      * The top-level IStep error and all sub-errors have the same PLID (matching
      * the EID of the first sub-error) so that the IStep error is linked to all

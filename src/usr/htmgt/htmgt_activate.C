@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2014,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2014                             */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -48,7 +48,7 @@ namespace HTMGT
 #endif
 
 
-    // Wait for all OCCs to reach ready state
+    // Wait for all OCCs to reach active ready state
     errlHndl_t waitForOccReady()
     {
         errlHndl_t l_err = NULL;
@@ -59,13 +59,6 @@ namespace HTMGT
         const size_t MSEC_BETWEEN_POLLS = 250;
         size_t numPolls = 0;
         std::vector<Occ*> occList = occMgr::instance().getOccArray();
-
-        // Determine which bit to check
-        uint8_t targetBit = OCC_STATUS_ACTIVE_READY;
-        if (OCC_STATE_OBSERVATION == occMgr::instance().getTargetState())
-        {
-            targetBit = OCC_STATUS_OBS_READY;
-        }
 
         do
         {
@@ -86,7 +79,7 @@ namespace HTMGT
                  ++itr)
             {
                 Occ * occ = (*itr);
-                if (false == occ->statusBitSet(targetBit))
+                if (false == occ->statusBitSet(OCC_STATUS_ACTIVE_READY))
                 {
                     waitingForInstance = occ->getInstance();
                     break;
@@ -110,12 +103,11 @@ namespace HTMGT
              * @moduleid HTMGT_MOD_WAIT_FOR_OCC_READY
              * @userdata1[0-15] OCC instance
              * @userdata1[16-31] poll attempts
-             * @userdata2[0-15] target ready bit
-             * @devdesc OCC not ready for target state
+             * @devdesc OCC not ready for active state
              */
             bldErrLog(l_err, HTMGT_MOD_WAIT_FOR_OCC_READY,
                       HTMGT_RC_OCC_NOT_READY,
-                      waitingForInstance, numPolls, targetBit, 0,
+                      waitingForInstance, numPolls, 0, 0,
                       ERRORLOG::ERRL_SEV_INFORMATIONAL);
         }
 
@@ -125,23 +117,32 @@ namespace HTMGT
 
 
 
-    // Wait for all OCCs to reach target state
-    errlHndl_t waitForOccState()
+    // Wait for all OCCs to reach active state
+    errlHndl_t waitForOccsActive()
     {
         errlHndl_t l_err = NULL;
+
+        TMGT_INF("wait_for_occs_active called");
 
         // Wait for all OCCs to be ready for active state
         l_err = waitForOccReady();
         if (NULL == l_err)
         {
-            // Send Set State command to master OCC.
-            // The master will use the target state (default = ACTIVE)
-            l_err = occMgr::instance().setOccState();
+            // Send Set State (ACTIVE) to master
+            l_err = occMgr::instance().setOccState(OCC_STATE_ACTIVE);
+            if (NULL == l_err)
+            {
+                TMGT_INF("waitForOccsActive: OCCs are all active");
+            }
+        }
+        else
+        {
+            TMGT_ERR("waitForOccsActive: OCC(s) are not in active ready");
         }
 
         return l_err;
 
-    } // end waitForOccState()
+    } // end waitForOccsActive()
 
 
 

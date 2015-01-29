@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2013,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2013,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -73,7 +71,7 @@ class CenMbaUeTable
      * @note  If an entry already exists, the entry's count is incremented and
      *        moved to the end of the queue.
      * @param i_type See enum UE_TABLE::Type.
-     * @param i_addr The address in which the UE occurred.
+     * @param i_addr The address in which the UE occured.
      */
     void addEntry( UE_TABLE::Type i_type, const CenAddr & i_addr );
 
@@ -89,7 +87,7 @@ class CenMbaUeTable
     struct UeTableData
     {
         UE_TABLE::Type  type;  ///< See enum UE_TABLE::Type
-        CenAddr         addr;  ///< The address in which the UE occurred
+        CenAddr         addr;  ///< The address in which the UE occured
         uint8_t         count; ///< Number of times the entry is detected
 
         /** @brief Default constructor. */
@@ -98,7 +96,7 @@ class CenMbaUeTable
         /**
          * @brief Constructor from components.
          * @param i_type See enum UE_TABLE::Type.
-         * @param i_addr The address in which the UE occurred.
+         * @param i_addr The address in which the UE occured.
          */
         UeTableData( UE_TABLE::Type i_type, const CenAddr & i_addr ) :
             type(i_type), addr(i_addr), count(1)

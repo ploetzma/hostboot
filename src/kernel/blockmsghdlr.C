@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2011,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2011,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -67,7 +65,7 @@ MessageHandler::HandleResult BlockWriteMsgHdlr::handleResponse(
         iv_va2paList.erase(l_paNode);
         delete l_paNode;
     }
-    //Not handling a response from kernel
+    //Not handling a reponse from kernel
     if (i_task != NULL)
     {
         //Find the task's msg count to know how many messages were sent

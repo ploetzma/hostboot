@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2011,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2011,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -824,7 +822,7 @@ int main( int argc,  char *argv[] )
     }
 
 
-    // Convert the endianness of the storage header.
+    // Convert the endianess of the storage header.
     storage_header_t* pHeader = reinterpret_cast<storage_header_t*>(pchBuffer);
     ConvertStorageHeader( pHeader );
     if( fVerbose )

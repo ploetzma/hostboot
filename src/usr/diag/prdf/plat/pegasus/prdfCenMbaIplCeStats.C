@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2013,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2013,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -327,7 +325,7 @@ int32_t CenMbaIplCeStats::calloutCePerDram( bool & o_callOutsMade )
                 o_callOutsMade = true;
 
                 // Only one symbol needs to be called out, so exit on first
-                // occurrence.
+                // occurance.
                 break;
             }
         }
@@ -405,7 +403,7 @@ int32_t CenMbaIplCeStats::calloutCePerRank( bool & o_callOutsMade )
                 o_callOutsMade = true;
 
                 // Only one symbol needs to be called out, so exit on first
-                // occurrence.
+                // occurance.
                 break;
             }
         }
@@ -483,7 +481,7 @@ int32_t CenMbaIplCeStats::calloutCePerDs( bool & o_callOutsMade )
                 o_callOutsMade = true;
 
                 // Only one symbol needs to be called out, so exit on first
-                // occurrence.
+                // occurance.
                 break;
             }
         }

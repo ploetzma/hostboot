@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2012,2014                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -90,9 +90,6 @@ namespace IPMI
             break;
         case TYPE_ASYNC:
             new_message = new BTAsyncMessage(i_cmd, i_len, i_data);
-            break;
-        case TYPE_EVENT:
-            new_message = new BTAsyncReadEventMessage(i_cmd, i_len, i_data);
             break;
         default:
             // We have ourselves a bug

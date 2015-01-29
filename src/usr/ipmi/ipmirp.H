@@ -1,11 +1,11 @@
 /* IBM_PROLOG_BEGIN_TAG                                                   */
 /* This is an automatically generated prolog.                             */
 /*                                                                        */
-/* $Source: src/usr/ipmi/ipmirp.H $                                       */
+/* $Source: src/usr/ipmi/ipmirp.H $                                    */
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2012,2014                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -79,13 +79,6 @@ class IpmiRP
     static void* get_capabilities(void* unused);
 
     /**
-     * Thread start routine for a little task which handles events
-     * which aren't registered by any other task
-     * @param[in] void*, unused
-     */
-    static void* last_chance_event_handler(void* unused);
-
-    /**
      * Default constructor
      */
     IpmiRP(void);
@@ -118,19 +111,6 @@ class IpmiRP
      * @param[in] i_msg, the message to queue
      */
     void queueForResponse(IPMI::Message& i_msg);
-
-    /**
-     * @brief Tell the resource provider which queue to use for events
-     * @param[in] i_cmd, the command we're looking for
-     * @param[in] i_msgq, the queue we should be notified on
-     */
-    void registerForEvent(const IPMI::command_t& i_cmd, const msg_q_t& i_msgq);
-
-    /**
-     * @brief Give the resource provider a message to put in the eventq
-     * @param[in] i_event, pointer to the new'd event (OEM SEL)
-     */
-    void postEvent(IPMI::oemSEL* i_event);
 
   private:
 
@@ -200,6 +180,13 @@ class IpmiRP
     void response(IPMI::Message* i_msg, IPMI::completion_code i_cc);
 
     /**
+     * @brief Handle an indication from the interface indicating the
+     * BMC interface has an event/sms message ready to read
+     * @param[in] void
+     */
+    void event(void);
+
+    /**
      * @brief Query the BMC for interface capabilities
      * @param[in] void
      * @note this fills in iv_bmc_timeout, etc.
@@ -207,24 +194,15 @@ class IpmiRP
     void getInterfaceCapabilities(void);
 
     /**
-     * @brief Process incoming event messages if they're not processed by
-     * any other task.
-     * @param[in] void
-     */
-    void lastChanceEventHandler(void);
-
-    /**
      * @brief Clean up resources and reply to shutdown msg
      * @param[in] void
      */
     void shutdownNow(void);
 
-    msg_q_t           iv_msgQ;         //!< ipmi mesage queue
-    IPMI::send_q_t    iv_sendq;        //!< msg to send queue
-    IPMI::timeout_q_t iv_timeoutq;     //!< msgs waiting for a timeout
-    IPMI::respond_q_t iv_respondq;     //!< msg respond pending list
-    IPMI::event_q_t   iv_eventq;       //!< map events to msg_t
-    msg_q_t           iv_last_chanceq; //!< last chance event queue
+    msg_q_t           iv_msgQ;        //!< ipmi mesage queue
+    IPMI::send_q_t    iv_sendq;       //!< msg to send queue
+    IPMI::timeout_q_t iv_timeoutq;    //!< msgs waiting for a timeout
+    IPMI::respond_q_t iv_respondq;    //!< msg respond pending list
 
     // Protect the queues from the message loop and the timeout thread
     mutex_t     iv_mutex;
@@ -243,7 +221,7 @@ class IpmiRP
     // Size of the recv buffer (max BMC will send)
     uint8_t     iv_recv_buffer_size;
 
-    // Recommended number of retries
+    // Recomended number of retries
     uint8_t     iv_retries;
 
     // Shutdown

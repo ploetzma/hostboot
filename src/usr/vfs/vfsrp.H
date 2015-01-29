@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2011,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2011,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -58,7 +56,7 @@ namespace VFS
             void get_test_modules(std::vector<const char *> & o_list) const;
 
             /**
-             * Test for existence of module
+             * Test for existance of module
              * @param[in] i_name module name
              * @return [true|false]
              */

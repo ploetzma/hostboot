@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2011,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2011,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -1094,7 +1092,7 @@ void PageTableManager::updateLRUEntry( PageTableEntry* i_PTE )
         pte.LRU++;
     }
 
-    // Update the software bits of the PTE.
+    // Update the sofware bits of the PTE.
     //     The ISA suggests we need to do a ldarx/stdcx combination
     //     here, but this isn't required because we have a spinlock
     //     around the page table as a whole.  No other thread will

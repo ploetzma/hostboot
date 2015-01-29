@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 1996,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -105,8 +103,7 @@ public:
   // Parameters:   Reference to the Step code data structure
   // Returns:      return code
   // Requirements: None
-  // Promises:     if rc = SUCCESS then data filled with appropriate service
-  //               data
+  // Promises:     if rc = SUCCESS then data filled with apropriate service data
   // Exceptions:   None
   // Concurrency:  synchronous
   // Notes:        if rc != SUCCESS then state of service data is unpredictable

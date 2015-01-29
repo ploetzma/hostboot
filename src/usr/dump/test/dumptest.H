@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2012,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -471,7 +469,7 @@ class DumpTest: public CxxTest::TestSuite
             int src_rc = 0;
             uint64_t paddr = 0;
 
-            // Looping through the first 3 destinations
+            // Looping throught the first 3 destinations
             for (int i = 0; i<3; i++)
             {
 

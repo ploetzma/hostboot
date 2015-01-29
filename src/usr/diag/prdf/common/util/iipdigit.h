@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 1993,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -70,7 +68,7 @@ namespace PRDF
 //
 // Purpose:  This type is used to take advantage of the most efficient
 //           memory reference size for a specific CPU architecture.
-//           This type definition is provided only to handle the case
+//           This type defintion is provided only to handle the case
 //           where no previous defintions exists.
 //
 // End Type Specification //////////////////////////////////////////////
@@ -146,7 +144,7 @@ class DIGIT_STRING_CLASS
     // Dependencies:  None.
     //
     // Notes:  This function performs the same action as a default
-    //         definition.  It is included because the virtual
+    //         defintion.  It is included because the virtual
     //         declaration is required for this base class.
     //
     // End Function Specification //////////////////////////////////////
@@ -154,7 +152,7 @@ class DIGIT_STRING_CLASS
     virtual ~DIGIT_STRING_CLASS
       (
          void
-         /*!i No parameters                                            */
+         /*!i No paramters                                            */
       )
          /*!o No value returned                                       */
       {
@@ -172,7 +170,7 @@ class DIGIT_STRING_CLASS
     // Dependencies:  None.
     //
     // Notes:  This function performs the same action as a default
-    //         definition.  It is included here to emphasize the actions
+    //         defintion.  It is included here to emphasize the actions
     //         performed and the need for an explicit definition in each
     //         derived class.
     //
@@ -368,7 +366,7 @@ class DIGIT_STRING_CLASS
     // Dependencies:  None.
     //
     // Notes:  This function performs the same action as a default
-    //         definition.  It is included here to emphasize the actions
+    //         defintion.  It is included here to emphasize the actions
     //         performed and the need for an explicit definition in each
     //         derived class.
     //

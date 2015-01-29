@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2002,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -27,7 +25,7 @@
 #define prdfResetThresholdResolution_H
 /**
  @file prdfResetThresholdResolution.H
- @brief Resolution that counts occurrences up to a threshold, then reports and resets
+ @brief Resolution that counts occurrances up to a threshold, then reports and resets
         the count and starts counting again.
 */
 

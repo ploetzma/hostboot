@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2011,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2011,2014                        */
 /* [+] Google Inc.                                                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
@@ -39,7 +39,6 @@
 #include <util/singleton.H>
 #include <errl/errlentry.H>
 #include <errldisplay/errldisplay.H>
-#include <errl/errlipmi.H>
 #include <sys/sync.h>
 #include <kernel/timemgr.H>
 #include <hbotcompid.H>
@@ -81,7 +80,6 @@ enum errlManagerNeeds
     PNOR,
     TARG,
     MBOX,
-    IPMI,
     ERRLDISP,
 } ;
 
@@ -148,7 +146,7 @@ public:
       * @brief Sends msg to errlmanager telling what resources are ready
       *
       * This is called by resources that the ErrlManager needs, which start up
-      * AFTER ErrlManager starts.
+      * AFTER ErrlManager starts. Currently, that's PNOR MBOX and TARGeting.
       *
       * It is a static function because a module cannot call an interface on a
       * singleton in another module
@@ -223,7 +221,6 @@ private:
         ERRLOG_ACCESS_MBOX_TYPE            = 0x00000035 | MBOX::FIRST_SECURE_MSG,
         ERRLOG_ACCESS_TARG_TYPE            = 0x00000036 | MBOX::FIRST_SECURE_MSG,
         ERRLOG_ACCESS_ERRLDISP_TYPE        = 0x00000037 | MBOX::FIRST_SECURE_MSG,
-        ERRLOG_ACCESS_IPMI_TYPE            = 0x00000038 | MBOX::FIRST_SECURE_MSG,
     };
 
     /**
@@ -303,7 +300,7 @@ private:
      * @param[in,out] io_err Error log handle to be committed
      *
      */
-    void sendErrLogToFSP ( errlHndl_t& io_err );
+    void sendErrLogToMbox ( errlHndl_t& io_err );
 
     /**
      * @brief Create a mailbox message with the error log and send it to Fsp.
@@ -340,7 +337,7 @@ private:
 
     /**
       * @brief
-      * Pointer to the header that precedes the error log storage buffer
+      * Pointer to the header that preceeds the error log storage buffer
       * in L3 RAM.  This may go away when we adopt PNOR, or else become
       * instance variables instead of a pointer pointing within the
       * storage buffer.
@@ -438,27 +435,16 @@ private:
      */
     void setACKInFlattened(uint32_t i_position);
 
-#ifdef CONFIG_BMC_IPMI
-    /**
-     * @brief Create an ipmi message with the error log and send it to BMC
-     *
-     * @param[in,out] io_err Error log handle to be committed
-     *
-     */
-    void sendErrLogToBmc(errlHndl_t &io_err);
-#endif
-
     /**
       * @brief errorlog-into-PNOR variables
       */
     char *iv_pnorAddr;          // HBEL section in PNOR
     uint32_t iv_maxErrlInPnor;  // max number of errorlogs that will fit
     uint32_t iv_pnorOpenSlot;   // current open slot available for an errorlog
-    bool iv_isSpBaseServices;   // do we need to send to FSP
-    bool iv_isMboxEnabled;      // are we able to send to FSP
-    bool iv_isIpmiEnabled;      // are we able to send to BMC via IPMI
-    bool iv_nonInfoCommitted;   // Keeps track of any non-informational logs.
-    bool iv_isErrlDisplayEnabled; // are we able to use the errorDisplay
+    bool iv_isSpBaseServices;           // do we need to send to FSP
+    bool iv_isMboxEnabled;              // are we able to send to FSP
+    bool iv_nonInfoCommitted;   //< Keeps track of any non-informational logs.
+    bool iv_isErrlDisplayEnabled;     // are we able to use the errorDisplay
 
     // Errl flags which represent processing needed by the errl
     // represented as a bit field (8 bits)
@@ -468,49 +454,89 @@ private:
         PNOR_FLAG      = 0x01,
         MBOX_FLAG      = 0x02,
         ERRLDISP_FLAG  = 0x04,
-        IPMI_FLAG      = 0x08,
-        ALL_FLAGS      = PNOR_FLAG | MBOX_FLAG
-    #ifdef CONFIG_BMC_IPMI
-                                   | IPMI_FLAG
-    #endif
     #ifdef CONFIG_CONSOLE_OUTPUT_ERRORDISPLAY
-                                   | ERRLDISP_FLAG
+        ALL_FLAGS      = PNOR_FLAG | MBOX_FLAG | ERRLDISP_FLAG,
+    #else
+        ALL_FLAGS      = PNOR_FLAG | MBOX_FLAG,
     #endif
     };
 
     // List of messages errl manager needs to handle
     // The unint8_t is a bit field to indiciate what needs to be done
-    typedef std::pair<errlHndl_t, uint8_t> ErrlFlagPair_t;
-    typedef std::list<ErrlFlagPair_t> ErrlList_t;
-    typedef ErrlList_t::iterator ErrlListItr_t;
-    ErrlList_t iv_errlList;
+    std::list<std::pair<errlHndl_t, uint8_t> > iv_errlList;
+
+    typedef std::list<std::pair<errlHndl_t, uint8_t> >::iterator ErrlListItr_t;
 
     /**
-     * @brief checks if the flag is set
+     * @brief checks if the pnor flag is set
      *
      * @param[in]   i_pair - pair of errl and bitfield of flags
-     * @param[in]   i_flag - specific flag
-     * @return      True if specified flag is set
+     * @return      True if PNOR flag is set
      *
      */
-    static bool _isFlagSet(const ErrlFlagPair_t &i_pair,
-                                const ERRLOG_FLAGS i_flag)
+    static bool _isPnorFlagSet(const std::pair<errlHndl_t, uint8_t> &i_pair)
     {
-        return (i_pair.second & i_flag);
+        return (i_pair.second & PNOR_FLAG);
     }
 
     /**
-     * @brief clears the flag, indicating complete
+     * @brief checks if the mbox flag is set
+     *
+     * @param[in]   i_pair - pair of errl and bitfield of flagst
+     * @return      True if mbox flag is set
+     *
+     */
+    static bool _isMboxFlagSet(const std::pair<errlHndl_t, uint8_t> &i_pair)
+    {
+        return (i_pair.second & MBOX_FLAG);
+    }
+
+    /**
+     * @brief checks if the errldisp flag is set
+     *
+     * @param[in]   i_pair - pair of errl and bitfield of flags
+     * @return      True if errldisp flag is set
+     *
+     */
+    static bool _isErrlDispFlagSet(const std::pair<errlHndl_t, uint8_t> &i_pair)
+    {
+        return (i_pair.second & ERRLDISP_FLAG);
+    }
+
+    /**
+     * @brief clears the pnor flag, indicating complete
      *
      * @param[in/out]   io_pair - pair of errl and bitfield of flags
-     * @param[in]       i_flag - specific flag
      * @return          NA
      *
      */
-    static void _clearFlag(ErrlFlagPair_t &io_pair,
-                            const ERRLOG_FLAGS i_flag)
+    static void _clearPnorFlag(std::pair<errlHndl_t, uint8_t> &io_pair)
     {
-        io_pair.second &= ~i_flag;
+        io_pair.second &= ~PNOR_FLAG;
+    }
+
+    /**
+     * @brief clears the mbox flag, indicating complete
+     *
+     * @param[in/out]   io_pair - pair of errl and bitfield of flags
+     * @return          NA
+     *
+     */
+    static void _clearMboxFlag(std::pair<errlHndl_t, uint8_t> &io_pair)
+    {
+        io_pair.second &= ~MBOX_FLAG;
+    }
+
+    /**
+     * @brief clears the errldisp flag, indicating complete
+     *
+     * @param[in/out]   io_pair - pair of errl and bitfield of flags
+     * @return          NA
+     *
+     */
+    static void _clearErrlDispFlag(std::pair<errlHndl_t, uint8_t> &io_pair)
+    {
+        io_pair.second &= ~ERRLDISP_FLAG;
     }
 
     /**
@@ -523,7 +549,8 @@ private:
      * @return          True if an erase occurred, otherwise false
      *
      */
-    bool _updateErrlListIter(ErrlListItr_t & io_it);
+    bool _updateErrlListIter(std::list< std::pair<errlHndl_t, uint8_t> >
+                                          ::iterator & io_it);
 
 };
 

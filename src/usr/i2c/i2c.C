@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2011,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2011,2014                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -1008,7 +1008,7 @@ errlHndl_t i2cRead ( TARGETING::Target * i_target,
 
             *((uint8_t*)o_buffer + bytesRead) = fifo.byte_0;
 
-            // Every time FIFO is read, reset timeout count
+            // Everytime FIFO is read, reset timeout count
             timeoutCount = I2C_TIMEOUT_COUNT( interval_ns );
 
             TRACUCOMP( g_trac_i2cr,
@@ -2446,23 +2446,23 @@ errlHndl_t i2cSetBusVariables ( TARGETING::Target * i_target,
 /**
  * @brief This function will handle everything required to reset each I2C master
  *        engine based on the input argement
+ *        @todo RTC 115834 - additional enums will be added. Currently just
+ *                           supporting I2C_RESET_PROC_HOST
  */
-errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
-                                   bool i_functional )
+errlHndl_t i2cResetMasters ( i2cResetType i_resetType,
+                             bool i_functional )
 {
     errlHndl_t err = NULL;
     bool error_found = false;
-    bool mutex_success = false;
-    mutex_t * engineLock = NULL;
     bool mutex_needs_unlock = false;
-
+    mutex_t * engineLock = NULL;
     misc_args_t io_args;
 
     // I2C Bus Speed Array
     TARGETING::ATTR_I2C_BUS_SPEED_ARRAY_type speed_array;
 
     TRACFCOMP( g_trac_i2c,
-               ENTER_MRK"i2cResetActiveMasters(): i2cResetType=0x%X, "
+               ENTER_MRK"i2cResetMasters(): i2cResetType=%d, "
                "i_functional=%d",
                i_resetType, i_functional );
 
@@ -2472,7 +2472,10 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
         // Get list of Procs
         TARGETING::TargetHandleList procList;
 
-        if ( i_resetType & I2C_RANGE_PROC )
+        if ( ( i_resetType == I2C_RESET_ALL ) ||
+             ( i_resetType == I2C_RESET_PROC_ALL ) ||
+             ( i_resetType == I2C_RESET_PROC_FSI ) ||
+             ( i_resetType == I2C_RESET_PROC_HOST) )
         {
 
             // Pass input parameter for function (true) or existing (false)
@@ -2482,13 +2485,12 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
 
             if( 0 == procList.size() )
             {
-                TRACFCOMP(g_trac_i2c,INFO_MRK
-                          "i2cResetActiveMasters: No Processor chips found!");
-
+                TRACFCOMP(g_trac_i2c,
+                          INFO_MRK"i2cResetMasters: No Processor chips found!");
             }
 
             TRACFCOMP( g_trac_i2c,
-                       INFO_MRK"i2cResetActiveMasters: I2C Master Procs: %d",
+                       INFO_MRK"i2cResetMasters: I2C Master Procs: %d",
                        procList.size() );
         }
 
@@ -2496,7 +2498,10 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
         // Get list of Membufs
         TARGETING::TargetHandleList membufList;
 
-        if ( i_resetType & I2C_RANGE_MEMBUF )
+        if ( ( i_resetType == I2C_RESET_ALL ) ||
+             ( i_resetType == I2C_RESET_MEMBUF_ALL ) ||
+             ( i_resetType == I2C_RESET_MEMBUF_FSI ) ||
+             ( i_resetType == I2C_RESET_MEMBUF_HOST ) )
         {
 
             // Pass input parameter for function (true) or existing (false)
@@ -2506,19 +2511,26 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
 
             if( 0 == membufList.size() )
             {
-                TRACFCOMP(g_trac_i2c,INFO_MRK
-                          "i2cResetActiveMasters: No Membuf chips found!");
+                TRACFCOMP(g_trac_i2c,
+                          INFO_MRK"i2cResetMasters: No Membuf chips found!");
             }
 
             TRACFCOMP( g_trac_i2c,
-                       INFO_MRK"i2cResetActiveMasters: I2C Master Membufs: %d",
+                       INFO_MRK"i2cResetMasters: I2C Master Membufs: %d",
                        membufList.size() );
         }
 
         // Combine lists into chipList
+        // probably could do this with a good assign() and insert() call
         TARGETING::TargetHandleList chipList;
-        chipList.insert(chipList.end(), procList.begin(), procList.end());
-        chipList.insert(chipList.end(), membufList.begin(), membufList.end());
+        for ( uint8_t i = 0; i < procList.size(); i++ )
+        {
+            chipList.push_back(procList[i]);
+        }
+        for ( uint8_t i = 0; i < membufList.size(); i++ )
+        {
+            chipList.push_back(membufList[i]);
+        }
 
         // Get the Master Proc Chip Target for comparisons later
         TARGETING::TargetService& tS = TARGETING::targetService();
@@ -2529,12 +2541,12 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
                "err for masterProcChipTargetHandle");
 
         // Do resets for each chip/target
-        for( size_t chip = 0; chip < chipList.size(); chip++ )
+        for( uint32_t chip = 0; chip < chipList.size(); chip++ )
         {
             TARGETING::Target* tgt = chipList[chip];
 
             TRACUCOMP( g_trac_i2c,
-                       INFO_MRK"i2cResetActiveMasters: Loop for tgt=0x%X",
+                       INFO_MRK"i2cResetMasters: Loop for tgt=0x%X",
                        TARGETING::get_huid(tgt) );
 
             // Look up I2C Mode for the target
@@ -2544,23 +2556,25 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
             i2cSetSwitches( tgt, io_args );
 
             // Compare mode with input parameter
-            if ( !( i_resetType & I2C_RANGE_HOST )
-                 && ( io_args.switches.useHostI2C == 1 ) )
+            if ( ( ( i_resetType == I2C_RESET_PROC_HOST ) ||
+                   ( i_resetType == I2C_RESET_MEMBUF_HOST ) )
+                 && ( io_args.switches.useHostI2C == 0 ) )
             {
                 TRACUCOMP( g_trac_i2c,
-                           INFO_MRK"i2cResetActiveMasters: skipping tgt=0x%X "
-                           "due to i_resetType=%d, useHostI2C=%d",
+                           INFO_MRK"i2cResetMasters: skipping tgt=0x%X due "
+                           "to i_resetType=%d, useHostI2C=%d",
                            TARGETING::get_huid(tgt), i_resetType,
                            io_args.switches.useHostI2C );
                 continue;
             }
 
-            if ( !( i_resetType & I2C_RANGE_FSI )
-                 && ( io_args.switches.useFsiI2C == 1 ) )
+            if ( ( ( i_resetType == I2C_RESET_PROC_FSI ) ||
+                   ( i_resetType == I2C_RESET_MEMBUF_FSI ) )
+                 && ( io_args.switches.useFsiI2C == 0 ) )
             {
                 TRACUCOMP( g_trac_i2c,
-                           INFO_MRK"i2cResetActiveMasters: skipping tgt=0x%X "
-                           "due to i_resetType=%d, useFsiI2C=%d",
+                           INFO_MRK"i2cResetMasters: skipping tgt=0x%X due "
+                           "to i_resetType=%d, useFsiI2C=%d",
                            TARGETING::get_huid(tgt), i_resetType,
                            io_args.switches.useFsiI2C );
                 continue;
@@ -2598,6 +2612,7 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
 
                 // We still need to reset the other I2C engines
                 errlCommit( err, I2C_COMP_ID );
+                err = NULL;
                 continue;
             }
 
@@ -2612,26 +2627,25 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
 
                 if ( check == false )
                 {
-                    TRACUCOMP( g_trac_i2c,INFO_MRK
-                               "i2cResetActiveMasters: skipping tgt=0x%X "
+                    TRACUCOMP( g_trac_i2c,
+                               INFO_MRK"i2cResetMasters: skipping tgt=0x%X "
                                "due to FSI::isSlavePresent returned=%d",
                                TARGETING::get_huid(tgt), check );
                     continue;
                 }
                 else
                 {
-                    TRACUCOMP( g_trac_i2c,INFO_MRK
-                               "i2cResetActiveMasters: keeping tgt=0x%X due "
+                    TRACUCOMP( g_trac_i2c,
+                               INFO_MRK"i2cResetMasters: keeping tgt=0x%X due "
                                "to FSI::isSlavePresent returned=%d",
                                TARGETING::get_huid(tgt), check );
                 }
             }
 
-            for( size_t engine = 0;
+            for( uint32_t engine = 0;
                  engine < I2C_BUS_ATTR_MAX_ENGINE;
                  engine++ )
             {
-                io_args.engine = engine;
 
                 // Only reset engine 0 for FSI
                 if ( ( engine != 0 ) &&
@@ -2640,30 +2654,30 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
                     continue;
                 }
 
+
                 // Look for any device on this engine based on speed_array
                 bool skip = true;
-                for ( size_t j = 0; j < I2C_BUS_ATTR_MAX_PORT; j++ )
+                for ( uint8_t j = 0; j < I2C_BUS_ATTR_MAX_PORT; j++ )
                 {
                     if ( speed_array[engine][j] != 0 )
                     {
                         skip = false;
-                        io_args.port = j; // use this port
                         break;
                     }
                 }
 
                 if ( skip == true )
                 {
-                    TRACUCOMP( g_trac_i2c,INFO_MRK
-                               "i2cResetActiveMasters: no devices found on "
+                    TRACUCOMP( g_trac_i2c,
+                               INFO_MRK"i2cResetMasters: no devices found on "
                                "tgt=0x%X engine=%d",
                                TARGETING::get_huid(tgt), engine );
                     continue;
                 }
                 else
                 {
-                    TRACFCOMP( g_trac_i2c,INFO_MRK
-                               "i2cResetActiveMasters: Resetting tgt=0x%X "
+                    TRACFCOMP( g_trac_i2c,
+                               INFO_MRK"i2cResetMasters: Resetting tgt=0x%X "
                                "engine=%d",
                                TARGETING::get_huid(tgt), engine );
                 }
@@ -2672,34 +2686,44 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
                 mutex_needs_unlock = false;
 
                 // Get the mutex for the requested engine
-                mutex_success = i2cGetEngineMutex( tgt,
-                                                   io_args,
-                                                   engineLock );
-
-
-                if( !mutex_success )
+                switch( engine )
                 {
-                    TRACUCOMP( g_trac_i2c,
-                               ERR_MRK"Error in i2cResetActiveMasters: "
-                               "i2cGetEngineMutex() failed to get mutex. "
-                               "skipping reset on tgt=0x%X engine =%d",
-                               TARGETING::get_huid(tgt), engine );
-                    continue;
-                }
+                case 0:
+                    engineLock = tgt->getHbMutexAttr<TARGETING::ATTR_I2C_ENGINE_MUTEX_0>();
+                    break;
+
+                case 1:
+                    engineLock = tgt->getHbMutexAttr<TARGETING::ATTR_I2C_ENGINE_MUTEX_1>();
+                    break;
+
+               case 2:
+                    engineLock = tgt->getHbMutexAttr<TARGETING::ATTR_I2C_ENGINE_MUTEX_2>();
+                    break;
+
+                default:
+                    TRACFCOMP( g_trac_i2c,
+                               ERR_MRK"Invalid engine for getting Mutex! "
+                               "engine=%d", engine  );
+                    // @todo RTC:69113 - Create an error here
+                    break;
+                };
 
                 // Lock on this engine
                 TRACUCOMP( g_trac_i2c,
-                           INFO_MRK"i2cResetActiveMasters: Obtaining lock for "
+                           INFO_MRK"i2cResetMasters: Obtaining lock for "
                            "engine: %d", engine );
                 (void)mutex_lock( engineLock );
                 mutex_needs_unlock = true;
-                TRACUCOMP( g_trac_i2c,INFO_MRK
-                           "i2cResetActiveMasters: Locked on engine: %d",
+                TRACUCOMP( g_trac_i2c,
+                           INFO_MRK"i2cResetMasters: Locked on engine: %d",
                            engine );
 
-                TRACUCOMP( g_trac_i2c,INFO_MRK
-                           "i2cResetActiveMasters: Reset 0x%X engine = %d",
-                           TARGETING::get_huid(tgt), engine );
+                TRACUCOMP( g_trac_i2c,
+                           INFO_MRK"i2cResetMasters: Reset 0x%X engine = %d",
+                           TARGETING::get_huid(procList[proc]), engine );
+
+                io_args.engine = engine;
+                io_args.port = 0; // default to port 0
 
                 err = i2cSetBusVariables ( tgt,
                                            I2C_BUS_SPEED_FROM_MRW,
@@ -2709,8 +2733,8 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
                 {
                     error_found = true;
 
-                    TRACFCOMP( g_trac_i2c,ERR_MRK
-                               "i2cResetActiveMasters: Error Setting Bus "
+                    TRACFCOMP( g_trac_i2c,
+                               ERR_MRK"i2cResetMasters: Error Setting Bus "
                                "Variables: tgt=0x%X engine=%d",
                                TARGETING::get_huid(tgt), engine );
 
@@ -2730,8 +2754,8 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
                                      FORCE_UNLOCK_RESET);
                     if( err )
                     {
-                        TRACFCOMP( g_trac_i2c,ERR_MRK
-                                   "i2cResetActiveMasters: Error reseting "
+                        TRACFCOMP( g_trac_i2c,
+                                   ERR_MRK"i2cResetMasters: Error reseting "
                                    "tgt=0x%X, engine=%d",
                                    TARGETING::get_huid(tgt), engine);
 
@@ -2749,8 +2773,8 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
                 {
                     // Unlock
                     (void) mutex_unlock( engineLock );
-                    TRACUCOMP( g_trac_i2c,INFO_MRK
-                               "i2cResetActiveMasters: Unlocked engine: %d",
+                    TRACUCOMP( g_trac_i2c,
+                               INFO_MRK"i2cResetMasters: Unlocked engine: %d",
                                engine );
                 }
 
@@ -2761,7 +2785,7 @@ errlHndl_t i2cResetActiveMasters ( i2cResetType i_resetType,
     } while( 0 );
 
     TRACFCOMP( g_trac_i2c,
-               EXIT_MRK"i2cResetActiveMasters(): err rc=0x%X, plid=0x%X",
+               EXIT_MRK"i2cResetMasters(): err rc=0x%X, plid=0x%X",
                ERRL_GETRC_SAFE(err), ERRL_GETPLID_SAFE(err));
 
     return err;
@@ -2779,7 +2803,7 @@ void i2cSetAccessMode( i2cSetAccessModeType i_setModeType )
     TARGETING::I2cSwitches switches;
 
     bool mutex_success = false;
-    mutex_t * engineLocks[I2C_BUS_ATTR_MAX_ENGINE];
+    mutex_t * engineLock = NULL;
     misc_args_t args;
 
 
@@ -2804,89 +2828,65 @@ void i2cSetAccessMode( i2cSetAccessModeType i_setModeType )
                    INFO_MRK"i2cSetAccessMode: Targets: %d",
                    tgtList.size() );
 
-        // Initalize mutex array
-        for ( size_t index = 0; index < I2C_BUS_ATTR_MAX_ENGINE; index++ )
-        {
-            engineLocks[index] = NULL;
-        }
-
         // Check and set each target
-        for( size_t i = 0; i < tgtList.size(); i++ )
+        for( uint32_t i = 0; i < tgtList.size(); i++ )
         {
             TARGETING::Target* tgt = tgtList[i];
 
-            // Get the mutex for all engines
-            for ( size_t engine = 0;
-                  engine < I2C_BUS_ATTR_MAX_ENGINE;
-                  engine++ )
+            // Get the mutex for engine 0
+            args.engine = 0;
+            mutex_success = i2cGetEngineMutex( tgt,
+                                               args,
+                                               engineLock );
+
+            if( !mutex_success )
             {
-                args.engine = engine;
-                engineLocks[engine] = NULL;
-
-                mutex_success = i2cGetEngineMutex( tgt,
-                                                   args,
-                                                   engineLocks[engine] );
-
-                if( !mutex_success )
-                {
-                    TRACFCOMP( g_trac_i2c,ERR_MRK"i2cSetAccessMode: Error from "
-                               "i2cGetEngineMutex() getting engine %d lock for "
-                               "tgt=0x%X", engine, TARGETING::get_huid(tgt));
-                    break;
-                }
-
-                // Lock on this engine
-                TRACUCOMP( g_trac_i2c,
-                           INFO_MRK"Obtaining lock for engine: %d",
-                           args.engine );
-
-                (void)mutex_lock( engineLocks[engine] );
-
-                TRACUCOMP( g_trac_i2c,
-                           INFO_MRK"Locked on engine: %d",
-                           args.engine );
+                TRACFCOMP( g_trac_i2c,ERR_MRK"i2cSetAccessMode: Error from "
+                           "i2cGetEngineMutex() getting engine 0 lock for "
+                           "tgt=0x%X", TARGETING::get_huid(tgt));
+                continue;
             }
 
-            if ( mutex_success )
-            {
-                // The target is locked so complete the operation
-                switches = tgt->getAttr<TARGETING::ATTR_I2C_SWITCHES>();
+            // Lock on this engine
+            TRACUCOMP( g_trac_i2c,
+                       INFO_MRK"Obtaining lock for engine: %d",
+                       args.engine );
 
-                TRACUCOMP( g_trac_i2c,"i2cSetAccessMode: tgt=0x%X switches: "
-                           "host=%d, fsi=%d",
-                           TARGETING::get_huid(tgt), switches.useHostI2C,
-                           switches.useFsiI2C);
+            (void)mutex_lock( engineLock );
 
-                // Support for I2C_SET_MODE_PROC_HOST
-                if ((switches.useHostI2C != 1) ||
-                    (switches.useFsiI2C  != 0)   )
-                {
-                    switches.useHostI2C = 1;
-                    switches.useFsiI2C  = 0;
+            TRACUCOMP( g_trac_i2c,
+                       INFO_MRK"Locked on engine: %d",
+                       args.engine );
 
-                    tgt->setAttr<TARGETING::ATTR_I2C_SWITCHES>(switches);
 
-                    TRACFCOMP( g_trac_i2c,"i2cSetAccessMode: tgt=0x%X "
-                               "I2C_SWITCHES updated: host=%d, fsi=%d",
-                               TARGETING::get_huid(tgt), switches.useHostI2C,
-                               switches.useFsiI2C);
-                }
-            }
+            switches = tgt->getAttr<TARGETING::ATTR_I2C_SWITCHES>();
 
-            // Unlock the engines
-            for ( size_t engine = 0;
-                  engine < I2C_BUS_ATTR_MAX_ENGINE;
-                  engine++ )
-            {
-                args.engine = engine;
-                if ( engineLocks[engine] != NULL )
-                {
-                    (void) mutex_unlock( engineLocks[engine] );
-                    TRACUCOMP( g_trac_i2c,
-                               INFO_MRK"Unlocked engine: %d",
-                               args.engine );
-                }
-            }
+            TRACUCOMP( g_trac_i2c,"i2cSetAccessMode: tgt=0x%X switches: "
+                       "host=%d, fsi=%d",
+                       TARGETING::get_huid(tgt), switches.useHostI2C,
+                       switches.useFsiI2C);
+
+             // Support for I2C_SET_MODE_PROC_HOST
+             if ((switches.useHostI2C != 1) ||
+                 (switches.useFsiI2C  != 0)   )
+             {
+                 switches.useHostI2C = 1;
+                 switches.useFsiI2C  = 0;
+
+                 tgt->setAttr<TARGETING::ATTR_I2C_SWITCHES>(switches);
+
+                 TRACFCOMP( g_trac_i2c,"i2cSetAccessMode: tgt=0x%X "
+                            "I2C_SWITCHES updated: host=%d, fsi=%d",
+                            TARGETING::get_huid(tgt), switches.useHostI2C,
+                            switches.useFsiI2C);
+             }
+
+             // Unlock
+             (void) mutex_unlock( engineLock );
+             TRACUCOMP( g_trac_i2c,
+                        INFO_MRK"Unlocked engine: %d",
+                        args.engine );
+
         } // end of target for loop
 
     } while( 0 );

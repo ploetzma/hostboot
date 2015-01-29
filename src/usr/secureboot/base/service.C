@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2013,2014                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2013,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -27,7 +25,6 @@
 #include <sys/mm.h>
 #include <util/singleton.H>
 #include <secureboot/secure_reasoncodes.H>
-#include <config.h>
 
 #include "settings.H"
 #include "header.H"
@@ -41,10 +38,6 @@ namespace SECUREBOOT
 
         do
         {
-
-// Don't blind purge in VPO
-#ifndef CONFIG_VPO_COMPILE
-
             // Load original secureboot header.
             if (enabled())
             {
@@ -57,21 +50,21 @@ namespace SECUREBOOT
             {
                 break;
             }
-#endif
+
             // Extend memory footprint into lower portion of cache.
             //   This can only fail is someone has already called to extend
             //   to post-secureboot state.  Major coding bug, so just assert.
             assert(0 == mm_extend(MM_EXTEND_POST_SECUREBOOT));
 
-// Disable SecureROM in VPO
-#ifndef CONFIG_VPO_COMPILE
+
             // Initialize the Secure ROM
             l_errl = initializeSecureROM();
             if (l_errl)
             {
                 break;
             }
-#endif
+
+
         } while(0);
 
         return l_errl;

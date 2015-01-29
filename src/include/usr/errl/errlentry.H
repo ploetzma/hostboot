@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2011,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2011,2014                        */
 /* [+] Google Inc.                                                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
@@ -495,7 +495,7 @@ public:
      *  @param[in]  i_priority      Priority of the callout
      *  @param[in]  i_deconfigState Enum indicating whether the failing part
      *                              should be deconfigured.
-     *  @param[in]  i_gardErrorType To indicate what type of failure occurred
+     *  @param[in]  i_gardErrorType To indicate what type of failure occured
      *
      *  @return void
      */
@@ -516,7 +516,7 @@ public:
      *  @param[in]  i_priority      Priority of the callout
      *  @param[in]  i_deconfigState Enum indicating whether the failing part
      *                              should be deconfigured.
-     *  @param[in]  i_gardErrorType To indicate what type of failure occurred
+     *  @param[in]  i_gardErrorType To indicate what type of failure occured
      *
      *  @return void
      */
@@ -551,7 +551,7 @@ public:
      *  @param[in]  i_priority      Priority of the callout
      *  @param [in] i_deconfigState Enum indicating whether the failing part
      *               should be deconfigured.
-     *  @param [in] i_gardErrorType to indicate what type of failure occurred
+     *  @param [in] i_gardErrorType to indicate what type of failure occured
      *
      *  @return void
      */
@@ -574,10 +574,10 @@ public:
                              const HWAS::callOutPriority i_priority);
 
     /**
-     * @brief  Import flattened error log
+     * @brief  Import flatened error log
      *
      * @param[in] i_buffer, pointer to flat data
-     * @param[in] i_len length of flattened data
+     * @param[in] i_len length of flat data
      * @return Status  0==SUCCESS
      */
     uint64_t unflatten( const void * i_buffer, uint64_t i_len);
@@ -705,7 +705,7 @@ private:
             const bool i_truncate = false);
 
     /**
-     * @brief Called by commit(), this function creates a
+     * @brief Called by commit(), this fucntion creates a
      * user details section which contains the Hostboot
      * build ID and adds this to the current error log being
      * processed.

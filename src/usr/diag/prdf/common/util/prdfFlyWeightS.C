@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2007,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -129,7 +127,7 @@ T * FlyWeightS<T,S>::find(const T & key, HintType & o_hint)
         l_rc = static_cast<T *>(*o_hint.col);
 
     // Hint is now pointing to the cell either containing the key or
-    // immediately preceding where this key would go... unless it is the
+    // immediately preceeding where this key would go... unless it is the
     // first item in the column.
 
     return l_rc;
@@ -150,7 +148,7 @@ T * FlyWeightS<T,S>::insert(const T & key, HintType & i_hint)
         return p;
     }
 
-    // Otherwise, hint contains the position immediately preceding
+    // Otherwise, hint contains the position immediately preceeding
     // where this key should go... unless it is the first item in the column.
 
     // Assign into heap, get pointer to position.

@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 1993,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -162,7 +160,7 @@ class CHIP_CLASS
     virtual int32_t MaskError( uint32_t error_mask_id ) = 0;
 
     /**
-     Capture the contents of certain registers within the hardware
+     Capture the contents of certain registers withing the hardware
      <ul>
      <br><b>Parameters:  </b> cd:Capture data object (to store the capture data)
      <br><b>Returns:     </b> return code (usually from MOPs)
@@ -222,7 +220,7 @@ class CHIP_CLASS
     //
     // Title:  operator= (assignment operator)
     //
-    // Purpose:  This assignment operator does nothing.   This definition
+    // Purpose:  This assignment operator does nothing.   This defintion
     //           is provided for an explicit call from a derived class
     //           assignment operator.  It does not need to be called by
     //           a derived class assignment operator.

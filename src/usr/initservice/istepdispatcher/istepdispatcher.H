@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2011,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2011,2014                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -223,7 +223,7 @@ private:
      *
      * @param[in]  i_istep      The istep to be executed.
      * @param[in]  i_substep    The substep to be executed.
-     * @param[out] o_doReconfig True if something occurred that requires a
+     * @param[out] o_doReconfig True if something ocurred that requires a
      *                          reconfigure, false otherwise
      */
     errlHndl_t doIstep(uint32_t i_istep,
@@ -332,7 +332,7 @@ private:
      *  @param[out] o_newSubstep new Substep to run, if necessary
      *
      *  @return  bool - True if the reconfigure happened inside the set of
-     *      necessary isteps and needs to be retried, false otherwise
+     *      neccessary isteps and needs to be retried, false otherwise
      */
     static bool checkReconfig(const uint8_t i_curIstep,
                               const uint8_t i_curSubstep,
@@ -458,33 +458,6 @@ private:
     void reconfigLoopInduce(TARGETING::Target* i_pDeconfigTarget,
                             errlHndl_t & o_err);
 #endif // CONFIG_RECONFIG_LOOP_TESTS_ENABLE
-
-    // istep pause configuration data structure for accessing the settings in
-    // ATTR_ISTEP_PAUSE_CONFIG (64-bit attribute)
-    typedef struct
-    {
-        uint8_t majorStep; // Target istep where pause will be applied
-        uint8_t minorStep;
-        uint8_t pauseLen;  // The number of seconds before IPL resumes from
-                           // pause state
-        uint8_t fullStopEn; // Enable full stop. When set to 0x01 the IPL stops
-                            // indefinately until resumed using an outside
-                            // command
-        uint32_t bpTagInfo; // Tag value passed to the iStepBreakPoint
-                            // function
-    } istepPauseConfig_t;
-
-    /**
-     * @brief Decodes the ATTR_ISTEP_PAUSE_CONFIG attribute and applies either a
-     * pause or full stop *before* the specified istep.
-     * Whether a pause or full stop is applied depends on the settings in
-     * ATTR_ISTEP_PAUSE_CONFIG which are set via attribute override.
-     *
-     * @param[i] i_step - Current istep
-     * @param[i] i_substep - Current substep
-     */
-    void istepPauseSet(uint8_t i_step, uint8_t i_substep);
-
 };
 } // namespace
 

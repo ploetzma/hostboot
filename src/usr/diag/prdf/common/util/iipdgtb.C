@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 1993,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -183,7 +181,7 @@ DIGIT_STRING_BYTE_CLASS::DIGIT_STRING_BYTE_CLASS
 DIGIT_STRING_BYTE_CLASS::~DIGIT_STRING_BYTE_CLASS
   (
      void
-     /*!i No parameters                                                */
+     /*!i No paramters                                                */
   )
      /*!o No value returned                                           */
   {

@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2010,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2010,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -102,7 +100,7 @@ tid_t task_gettid();
  *  This function is simply for debug / tracing purposes.  At the time this
  *  function call returns, or any time afterwards, a pre-emptive context
  *  switch could occur and the task could be migrated to another CPU when
- *  execution resumes.  Therefore there is no guarantee that the return
+ *  execution resumes.  Therefore there is no guarentee that the return
  *  value is valid at anytime after this function returns.
  */
 cpuid_t task_getcpuid();

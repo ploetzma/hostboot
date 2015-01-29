@@ -481,7 +481,7 @@ void add_reserved_mem(devTree * i_dt,
      * Unless a component (skiboot or Linux) specifically knows about a region
      * (usually based on its name) and decides to change or remove it, all
      * these regions are passed as-is to Linux and to subsequent kernels
-     * across kexec and are kept preserved.
+     * accross kexec and are kept preserved.
      */
 
     dtOffset_t rootNode = i_dt->findNode("/");
@@ -592,8 +592,8 @@ errlHndl_t bld_fdt_system(devTree * i_dt, bool i_smallTree)
     dtOffset_t rootNode = i_dt->findNode("/");
 
     //Common settings
-    /* Define supported power states -- options:
-                         nap, deep-sleep, fast-sleep, rvwinkle*/
+    /*Define supported power states -- options:
+                         nap, deep-sleep, fast-sleep, rvwinkle */
     const char* pmode_compatStrs[] = {"nap", "fast-sleep", "rvwinkle", NULL};
     i_dt->addPropertyStrings(rootNode, "ibm,enabled-idle-states",
                              pmode_compatStrs);
@@ -601,71 +601,9 @@ errlHndl_t bld_fdt_system(devTree * i_dt, bool i_smallTree)
     // Nothing to do for small trees currently.
     if (!i_smallTree)
     {
-        /* Fetch the MRW-defined compatible model from attributes */
-        ATTR_OPAL_MODEL_type l_model = {0};
-        TARGETING::Target* sys = NULL;
-        TARGETING::targetService().getTopLevelTarget(sys);
-        sys->tryGetAttr<TARGETING::ATTR_OPAL_MODEL>(l_model);
-
-        /* Add compatibility node */
-        const char* l_compats[] = { "ibm,powernv", l_model, NULL };
-        i_dt->addPropertyStrings(rootNode, "compatible", l_compats);
-
-        /* Add system model node */
-        // Based off of the DR field in the OPFR
-        // TODO RTC 118373 -- update to account for firestone/memory riser
-        TARGETING::TargetHandleList l_membTargetList;
-        getAllChips(l_membTargetList, TYPE_MEMBUF);
-
-        //if can't find a centaur for the CVPD, default to unknown
-        if (l_membTargetList.size())
-        {
-            TARGETING::Target * l_pMem = l_membTargetList[0];
-            size_t vpdSize = 0x0;
-
-            // Note: First read with NULL for o_buffer sets vpdSize to the
-            // correct length
-            errhdl = deviceRead( l_pMem,
-                                 NULL,
-                                 vpdSize,
-                                 DEVICE_CVPD_ADDRESS( CVPD::OPFR,
-                                                      CVPD::DR ));
-
-            if(errhdl)
-            {
-                TRACFCOMP(g_trac_devtree,ERR_MRK" Couldn't get DR size for HUID=0x%.8X",
-                          TARGETING::get_huid(l_pMem));
-                i_dt->addPropertyString(rootNode, "model", "unknown");
-                errlCommit(errhdl, DEVTREE_COMP_ID);
-            }
-            else
-            {
-                char drBuf[vpdSize+1];
-                memset(&drBuf, 0x0, (vpdSize+1)); //ensure null terminated str
-                errhdl = deviceRead( l_pMem,
-                                     reinterpret_cast<void*>( &drBuf ),
-                                     vpdSize,
-                                     DEVICE_CVPD_ADDRESS( CVPD::OPFR,
-                                                          CVPD::DR ));
-
-                if(errhdl)
-                {
-                    TRACFCOMP(g_trac_devtree,ERR_MRK" Couldn't read DR for HUID=0x%.8X",
-                              TARGETING::get_huid(l_pMem));
-                }
-                else
-                {
-                    i_dt->addPropertyString(rootNode, "model", drBuf);
-                }
-            }
-        }
-        else //chassis info not found, default to unknown
-        {
-            TRACFCOMP(g_trac_devtree,ERR_MRK" VPD not found, model defaulted to unknown");
-            i_dt->addPropertyString(rootNode, "model", "unknown");
-        }
+        i_dt->addPropertyString(rootNode, "compatible", "ibm,powernv");
+        i_dt->addPropertyString(rootNode, "model", "palmetto");
     }
-
     return errhdl;
 }
 
@@ -800,7 +738,7 @@ errlHndl_t bld_fdt_mem(devTree * i_dt, bool i_smallTree)
      * In order to be able to handle affinity propertly, we require that
      * a memory node is created for each range of memory that has a different
      * "affinity", which in practice means for each chip since we don't
-     * support memory interleaved across multiple chips on P8.
+     * support memory interleaved accross multiple chips on P8.
      *
      * Additionally, it is *not* required that one chip = one memory node,
      * it is perfectly acceptable to break down the memory of one chip into

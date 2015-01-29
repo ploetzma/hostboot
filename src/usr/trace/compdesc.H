@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2012,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -82,9 +80,6 @@ namespace TRACE
 
             Entry* iv_first;    //< First (newest) trace entry.
             Entry* iv_last;     //< Last (oldest) trace entry.
-
-            friend bool TRACE::isDebugEnabled(ComponentDesc * i_td);
-
     };
 
     /** @class ComponentList

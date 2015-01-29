@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2013,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2004,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -245,12 +243,12 @@ void captureDramRepairsData( TARGETING::TargetHandle_t i_mbaTrgt,
             dramStream << mbaData;
 
             #ifndef PPC
-            // Fix endianness issues with non PPC machines.
-            // This is a workaround. Though UtilMem takes care of endianness,
+            // Fix endianess issues with non PPC machines.
+            // This is a workaround. Though UtilMem takes care of endianess,
             // It seems with capture data its not working
             const size_t sz_word = sizeof(uint32_t);
 
-            // Align data with 32 bit boundary
+            // Allign data with 32 bit boundary
             for (uint32_t i = 0; i < ( dramStream.size()%sz_word ); i++)
             {
                 uint8_t dummy = 0;
@@ -308,7 +306,7 @@ void captureDramRepairsVpd( TargetHandle_t i_mbaTrgt, CaptureData & io_cd )
         // Get the maximum capture data size.
         size_t sz_maxData = masterRanks.size() * (sz_rank + sz_entry);
 
-        // Adjust the size for endianness.
+        // Adjust the size for endianess.
         sz_maxData = ((sz_maxData + sz_word-1) / sz_word) * sz_word;
 
         // Initialize to 0.
@@ -341,7 +339,7 @@ void captureDramRepairsVpd( TargetHandle_t i_mbaTrgt, CaptureData & io_cd )
 
         if( 0 == idx ) break; // Nothing to capture
 
-        // Fix endianness issues with non PPC machines.
+        // Fix endianess issues with non PPC machines.
         size_t sz_capData = idx;
         sz_capData = ((sz_capData + sz_word-1) / sz_word) * sz_word;
         for ( uint32_t i = 0; i < (sz_capData/sz_word); i++ )

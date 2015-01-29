@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2014,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2014                             */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -42,50 +42,6 @@
 
 namespace SENSOR
 {
-
-    /**
-     *  @enum procStatusSensorOffsets
-     *  Sensor specific completion codes, defined in IPMI Spec.
-     *
-     */
-    enum procStatusSensorOffsets
-    {
-        IERR                            = 0x00,
-        THERMAL_TRIP                    = 0x01,
-        BIST_FAILURE                    = 0x02,
-        HANG_IN_POST                    = 0x03,
-        INIT_FAILURE                    = 0x04,
-        PROC_CONFIG_ERROR               = 0x05,
-        BIOS_ERROR                      = 0x06,
-        PROC_PRESENCE_DETECTED          = 0x07,
-        PROC_DISABLED                   = 0x08,
-        TERMINATOR_PRESNCE_DETECTED     = 0x09,
-        PROCESSOR_THROTTLED             = 0x0A,
-        MACHINE_CHECK_EXCEPTION         = 0x0B,
-        CORRECTABLE_MACHINE_CHECK       = 0x0C,
-
-    };
-
-    /**
-     *  @enum dimmStatusSensorOffsets
-     *  Dimm specific offsets for status sensor, defined in IPMI Spec.
-     *
-     */
-    enum dimmStatusSensorOffsets
-    {
-        CORRECTABLE_ECC_ERROR           = 0x00,
-        UNCORRECTABLE_ECC_ERROR         = 0x01,
-        PARITY_ERROR                    = 0x02,
-        MEMORY_SCRUB_ERROR              = 0x03,
-        MEMORY_DEVICE_DISABLED          = 0x04,
-        CORRECTABLE_ECC_ER_LIMIT_REACH  = 0x05,
-        MEM_DEVICE_PRESENCE_DETECTED    = 0x06,
-        MEM_CONFIG_ERROR                = 0x07,
-        SPARE                           = 0x08,
-        MEMORY_AUTOMATICALLY_THROTTLED  = 0x09,
-        CRITICAL_OVER_TEMP              = 0x0A,
-    };
-
     //**  Bit definition for set sensor reading cmd operation field
     //      [7:6] 10b - write given values to event data bytes let BMC handle
     //                  offset in event data 1 when an external event is
@@ -112,7 +68,7 @@ namespace SENSOR
     static const uint16_t SENSOR_NAME_MINOR_MASK = 0x00FF;
 
     /**
-     *   @struct setSensorReadingRequest
+     *   @struct set_sensor_reading_request
      *       structure holding the data for the set sensor reading command which
      *       Hostboot will send to the BMC to update sensor status/readings.
      *
@@ -135,6 +91,7 @@ namespace SENSOR
         };
     }PACKED;
 
+
     /**
      *  @enum  completionCode
      *  Sensor specific completion codes, defined in IPMI Spec.
@@ -146,7 +103,27 @@ namespace SENSOR
         CC_EVENT_DATA_BYTES_NOT_SETTABLE  = 0x81
     };
 
+    /**
+     *  @enum procStatusSensorOffsets
+     *  Sensor specific completion codes, defined in IPMI Spec.
+     *
+     */
+    enum procStatusSensorOfffsets
+    {
+        PROC_PRESENT            = 0x07,
+        PROC_FUNCTIONAL_OFFSET  = 0x08,
+    };
 
+    /**
+     *  @enum dimmStatusSensorOffsets
+     *  Dimm specific offsets for status sensor, defined in IPMI Spec.
+     *
+     */
+    enum dimmStatusSensorOffsets
+    {
+        DIMM_PRESENT_OFFSET     = 0x06,
+        DIMM_FUNCTIONAL_OFFSET  = 0x04,
+    };
 
     /**
      *  @class SensorBase
@@ -249,14 +226,6 @@ namespace SENSOR
                     setSensorReadingRequest *& io_data,
                     IPMI::completion_code& o_completion_code );
 
-            /**
-             * @brief return the sensor number
-             *
-             * @return sensor_number - sensor number for this sensor
-             *
-             */
-            uint8_t  getSensorNumber();
-
         protected:
 
             /**
@@ -305,6 +274,10 @@ namespace SENSOR
             SensorBase& operator=(const SensorBase& i_right);
 
             SensorBase(const SensorBase& thing );
+
+            // helper function to get sensor number attribute
+            // of passed in target
+            uint16_t  getSensorNumber();
 
     };
 
@@ -662,72 +635,6 @@ namespace SENSOR
      *      the system.  All errors will be internally committed.
      */
     void updateBMCFaultSensorStatus(void);
-
-    /*
-     *  @class OCCActiveSensor
-     *
-     *  @brief Specialized class to handle OCC_Active sensors.
-     *
-     *  @par Detailed Description:
-     *      Provides the functionality needed to set the functional status of
-     *      the OCCs.  The object will determine from the Target* which of
-     *      the OCC sensors to set.  The OCC_Active sensor is defined as a
-     *      processor type sensor so it will use the offsets defined in the
-     *      ipmi spec for that type of sensor.
-     */
-
-    class OCCActiveSensor : public SensorBase
-    {
-
-        public:
-
-            /**
-             * @enum stateEnum
-             *
-             *  enum defining the state of the OCC sensor
-             */
-            enum OccStateEnum
-            {
-                OCC_ACTIVE              = 0x0001,
-                OCC_NOT_ACTIVE          = 0x0002
-            };
-
-            /**
-             *  @brief Constructor for an OccActive sensor
-             *
-             *  The OCCActiveSensor sensor is used to mark the OCC as functional
-             *
-             *  The IPMI sensor number for this sensor is associated with
-             *  each instance of a Processor target.
-             *
-             */
-            OCCActiveSensor( TARGETING::Target * );
-
-            /**
-             *  @brief Destructor for OCC_Active
-             *
-             */
-            ~OCCActiveSensor();
-
-            errlHndl_t setState( OccStateEnum i_state );
-
-        private:
-            // disable the default constructor
-            OCCActiveSensor();
-
-            uint8_t iv_functionalOffset;
-
-    };
-
-    /*
-     *   @brief Return the fault sensor number for a target
-     *   Will return either the status sensor or Fault sensor number for a
-     *   given target.  If the target passed in does not have either of those
-     *   sensor types, the "System Error" sensor number will be returned.
-     *
-     */
-    uint8_t getFaultSensorNumber(TARGETING::Target * i_pTarget );
-
 
     /**
      *   @brief Update DIMM/CORE/Processor status sensors on the BMC.

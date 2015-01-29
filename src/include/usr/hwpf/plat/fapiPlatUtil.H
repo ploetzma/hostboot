@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2013,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2013,2014                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -25,7 +25,7 @@
 /**
  *  @file fapiPlatUtil.H
  *
- *  @brief Defines miscellaneous utility functions for the platform layer.
+ *  @brief Defines miscellanous utility functions for the platform layer.
  *         Hardware procedure writers will not call these functions.
  *
  */

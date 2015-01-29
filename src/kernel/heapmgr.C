@@ -97,7 +97,7 @@ void* HeapManager::realloc(void* i_ptr, size_t i_sz)
 
 void HeapManager::coalesce( void )
 {
-    Singleton<HeapManager>::instance()._coalesce();
+    //Singleton<HeapManager>::instance()._coalesce();
 }
 
 void* HeapManager::_allocate(size_t i_sz)
@@ -147,7 +147,7 @@ void* HeapManager::_realloc(void* i_ptr, size_t i_sz)
 
 void* HeapManager::_reallocBig(void* i_ptr, size_t i_sz)
 {
-    // Currently all large allocations fall on a page boundary,
+    // Currently all large allocations fall on a page boundry,
     // but small allocatoins never do
     if(ALIGN_PAGE(reinterpret_cast<uint64_t>(i_ptr)) !=
        reinterpret_cast<uint64_t>(i_ptr))
@@ -552,7 +552,7 @@ void* HeapManager::_allocateBig(size_t i_sz)
 
 bool HeapManager::_freeBig(void* i_ptr)
 {
-    // Currently all large allocations fall on a page boundary,
+    // Currently all large allocations fall on a page boundry,
     // but small allocations never do
     if(ALIGN_PAGE(reinterpret_cast<uint64_t>(i_ptr)) !=
        reinterpret_cast<uint64_t>(i_ptr))

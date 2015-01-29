@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2012,2014                        */
 /* [+] Google Inc.                                                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
@@ -194,12 +194,11 @@ errlHndl_t MailboxSp::_init()
     }
     // else leave iv_disabled as true;
 
-#ifndef CONFIG_VPO_COMPILE
     // Start the the interprocessor communications message handler
     IPC::IpcSp::init(err);
+
     // call ErrlManager function - tell him that MBOX is ready!
     ERRORLOG::ErrlManager::errlResourceReady(ERRORLOG::MBOX);
-#endif
 
     return err;
 }
@@ -845,7 +844,7 @@ void MailboxSp::recv_msg(mbox_msg_t & i_mbox_msg)
                 else //sync message from FSP
                 {
                     // Need to save queue_id and msg_id and msg ptr
-                    // for response
+                    // for reponse
                     msg_respond_t * response = new msg_respond_t(msg);
                     response->msg_id = i_mbox_msg.msg_id;
                     response->msg_queue_id = i_mbox_msg.msg_queue_id;

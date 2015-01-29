@@ -64,9 +64,6 @@ namespace   INITSERVICE
                 NULL,
                 { NONE, EXT_IMAGE, IPL_NOOP, false }
         },
-
-// To reduce extended image size for VPO, don't run these isteps in VPO
-#ifndef CONFIG_VPO_COMPILE
         {
                 ISTEPNAME(21,01,"host_runtime_setup"),
                 START_PAYLOAD::call_host_runtime_setup,
@@ -82,13 +79,10 @@ namespace   INITSERVICE
                 START_PAYLOAD::call_host_start_payload,
                 { START_FN, EXT_IMAGE, MPIPL_OP | NORMAL_IPL_OP, false }
         },
-#endif
-
 };
 
 const DepModInfo  g_istep21Dependancies = {
     {
-#ifndef CONFIG_VPO_COMPILE
         DEP_LIB(libbuild_winkle_images.so),
         DEP_LIB(libstart_payload.so),
         DEP_LIB(libruntime.so),
@@ -100,7 +94,6 @@ const DepModInfo  g_istep21Dependancies = {
 #if defined(CONFIG_HTMGT)
         DEP_LIB(libhtmgt.so),
         DEP_LIB(libmc_config.so),
-#endif
 #endif
         NULL
     }

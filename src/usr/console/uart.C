@@ -27,7 +27,6 @@
 #include <devicefw/userif.H>
 #include <lpc/lpcif.H>
 #include <kernel/console.H>
-#include <sys/task.h>
 #include <sys/time.h>
 #include <errl/errlmanager.H>
 #include <hwas/common/hwasCallout.H>
@@ -117,7 +116,7 @@ namespace CONSOLE
             // Wait for transmit FIFO to have space.
             {
                 const uint64_t DELAY_NS = 100;
-                const uint64_t DELAY_LOOPS = 10000;
+                const uint64_t DELAY_LOOPS = 1000000;
 
                 uint8_t data = 0;
                 uint64_t loops = 0;
@@ -133,7 +132,6 @@ namespace CONSOLE
                         break;
                     }
                     nanosleep(0, DELAY_NS);
-                    task_yield();
 
                     loops++;
                 } while( loops < DELAY_LOOPS);

@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2013,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2013,2014                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -22,11 +22,10 @@
 /* permissions and limitations under the License.                         */
 /*                                                                        */
 /* IBM_PROLOG_END_TAG                                                     */
-// $Id: proc_tod_utils.H,v 1.17 2015/01/08 19:50:37 jklazyns Exp $
+// $Id: proc_tod_utils.H,v 1.15 2014/10/14 15:07:54 jklazyns Exp $
 //------------------------------------------------------------------------------
 // *! (C) Copyright International Business Machines Corp. 2012
 // *! All Rights Reserved -- Property of IBM
-// *! ***  ***
 // *!
 // *! TITLE : proc_tod_utils.H
 // *!
@@ -391,8 +390,7 @@ enum tod_action
     TOD_SETUP,
     TOD_INIT,
     TOD_STATUS,
-    TOD_CLEANUP,
-    TOD_CHECK_OSC
+    TOD_CLEANUP
 };
 
 // Input which determines the topology being configured
@@ -405,12 +403,10 @@ enum proc_tod_setup_tod_sel
 // Input which determines the master oscillator to use
 enum proc_tod_setup_osc_sel
 {
-    TOD_OSC_0,             // oscillator connected to OSC0 and not OSC1
-    TOD_OSC_1,             // oscillator connected to OSC1 and not OSC0
-    TOD_OSC_0_AND_1,       // oscillators connected to both OSC0 and OSC1
-    TOD_OSC_0_AND_1_SEL_0, // oscillators connected to both OSC0 and OSC1, but OSC0 will always be selected
-    TOD_OSC_0_AND_1_SEL_1, // oscillators connected to both OSC0 and OSC1, but OSC1 will always be selected
-    TOD_OSC_NONE           // No oscillators connected
+    TOD_OSC_0,      // oscillator connected to OSC0 and not OSC1
+    TOD_OSC_1,      // oscillator connected to OSC1 and not OSC0
+    TOD_OSC_0_AND_1 // oscillators connected to both OSC0 and OSC1
+
 };
 
 // Defines the upstream connection for the given node

@@ -71,7 +71,6 @@
 
 //  include prototypes file
 #include    "../../../usr/hwpf/hwp/sbe_centaur_init/sbe_centaur_init.H"
-#include <config.h>
 
 namespace   INITSERVICE
 {
@@ -82,9 +81,6 @@ const   TaskInfo    g_istep10[]  =   {
                 NULL,
                 { NONE, EXT_IMAGE, IPL_NOOP, false }
         },
-
-// Reduce extended img size for VPO
-#ifndef CONFIG_VPO_COMPILE
         {
                 ISTEPNAME(10,01,"host_prd_hwreconfig"),
                 HWAS::host_prd_hwreconfig,
@@ -155,13 +151,10 @@ const   TaskInfo    g_istep10[]  =   {
                 HWAS::host_stub,
                 { START_FN, EXT_IMAGE, NORMAL_IPL_OP, true }
         },
-#endif
-
 };
 
 const DepModInfo g_istep10Dependancies = {
     {
-#ifndef CONFIG_VPO_COMPILE
         DEP_LIB(libsbe_centaur_init.so),
         DEP_LIB(libfapiporeve.so),
         DEP_LIB(libporeve.so),
@@ -169,7 +162,6 @@ const DepModInfo g_istep10Dependancies = {
         DEP_LIB(libsbe.so),
         DEP_LIB(libproc_hwreconfig.so),
         DEP_LIB(libslave_sbe.so),
-#endif
         NULL
     }
 };

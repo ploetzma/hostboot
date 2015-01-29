@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2010,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2010,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -81,7 +79,7 @@ class HeapManager
         static void init();
 
         /**
-         * Request an allocation of heap memory
+         * Reqest an allocation of heap memory
          * @param[in] i_sz  requested memory size in bytes
          * @return a pointer to allocated memory
          */

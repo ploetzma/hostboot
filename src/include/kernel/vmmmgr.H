@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2010,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2010,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -197,7 +195,7 @@ class VmmManager
 
         /**
          * @brief Allocates a block of virtual memory that extends the VMM
-         *          space up to 32MEG of Mainstore.
+         *          space upto 32MEG of Mainstore.
          */
         static int mmExtend( void);
 

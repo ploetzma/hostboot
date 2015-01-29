@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2013,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2013,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -66,7 +64,7 @@ namespace LaneRepair
      * @param i_busPos  Bus position
      * @note  This will only clear FIR bits if spare deploy attention is present
      *        on DMI bus. It does not check for spare deployed  attention type
-     *        Calling function should make ensure that.
+     *        Calling fucntion should make ensure that.
      * @return  Non-SUCCESS if an internal function fails, SUCCESS otherwise.
      */
     int32_t cleanupSecondaryFirBits(  ExtensibleChip * i_chip,

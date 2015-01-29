@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2013,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2013,2014                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -51,9 +51,6 @@
 #include <erepairAccessorHwpFuncs.H>
 #include <io_fir_isolation.H>
 #include <fapiAttributeIds.H>
-#ifdef __HOSTBOOT_MODULE
-#include <config.h>
-#endif
 
 using namespace TARGETING;
 
@@ -182,40 +179,22 @@ int32_t getVpdFailedLanes(TargetHandle_t i_rxBusTgt,
                           std::vector<uint8_t> &o_txFailLanes)
 {
     int32_t o_rc = SUCCESS;
-    do
+    errlHndl_t err = NULL;
+
+    PRD_FAPI_TO_ERRL(err,
+                     erepairGetFailedLanes,
+                     getFapiTarget(i_rxBusTgt),
+                     o_txFailLanes,
+                     o_rxFailLanes);
+
+    if(NULL != err)
     {
-
-        // Some hardware configurations do not have Memory Buffer VPD.
-        // Hence, reading of DMI lane eRepair data from MBVPD need
-        // to be skipped.
-#if defined(__HOSTBOOT_MODULE) and !defined(CONFIG_HAVE_MBVPD)
-        if(TYPE_MEMBUF == getTargetType(i_rxBusTgt))
-        {
-            // Return zero fail lanes when we are not reading the MBVPD.
-            o_rxFailLanes.clear();
-            o_txFailLanes.clear();
-            break;
-        }
-#endif
-
-        errlHndl_t err = NULL;
-        PRD_FAPI_TO_ERRL(err,
-                         erepairGetFailedLanes,
-                         getFapiTarget(i_rxBusTgt),
-                         o_txFailLanes,
-                         o_rxFailLanes);
-
-        if(NULL != err)
-        {
-            PRDF_ERR( "[PlatServices::getVpdFailedLanes] HUID: 0x%08x "
-                    "erepairGetFailedLanes failed",
-                    getHuid(i_rxBusTgt));
-            PRDF_COMMIT_ERRL( err, ERRL_ACTION_REPORT );
-            o_rc = FAIL;
-            break;
-        }
-    }while(0);
-
+        PRDF_ERR( "[PlatServices::getVpdFailedLanes] HUID: 0x%08x "
+                  "erepairGetFailedLanes failed",
+                  getHuid(i_rxBusTgt));
+        PRDF_COMMIT_ERRL( err, ERRL_ACTION_REPORT );
+        o_rc = FAIL;
+    }
     return o_rc;
 }
 
@@ -225,41 +204,22 @@ int32_t setVpdFailedLanes(TargetHandle_t i_rxBusTgt,
                           bool & o_thrExceeded)
 {
     int32_t o_rc = SUCCESS;
-    do
+    errlHndl_t err = NULL;
+
+    PRD_FAPI_TO_ERRL(err,
+                    erepairSetFailedLanes,
+                    getFapiTarget(i_txBusTgt),
+                    getFapiTarget(i_rxBusTgt),
+                    i_rxFailLanes,
+                    o_thrExceeded);
+    if(NULL != err)
     {
-
-        // Some hardware configurations do not have Memory Buffer VPD.
-        // Hence, writing of DMI lane eRepair data into MBVPD need
-        // to be skipped.
-#if defined(__HOSTBOOT_MODULE) and !defined(CONFIG_HAVE_MBVPD)
-        if(TYPE_MEMBUF == getTargetType(i_rxBusTgt) ||
-           TYPE_MEMBUF == getTargetType(i_txBusTgt))
-        {
-            // Threshold is not exceeded when there is no
-            // MBVPD and hence no checking of any existing faillanes.
-            o_thrExceeded = false;
-            break;
-        }
-#endif
-
-        errlHndl_t err = NULL;
-        PRD_FAPI_TO_ERRL(err,
-                         erepairSetFailedLanes,
-                         getFapiTarget(i_txBusTgt),
-                         getFapiTarget(i_rxBusTgt),
-                         i_rxFailLanes,
-                         o_thrExceeded);
-        if(NULL != err)
-        {
-            PRDF_ERR( "[PlatServices::setVpdFailedLanes] rxHUID: 0x%08x "
-                    "txHUID: 0x%08x erepairSetFailedLanes failed",
-                    getHuid(i_rxBusTgt), getHuid(i_txBusTgt));
-            PRDF_COMMIT_ERRL( err, ERRL_ACTION_REPORT );
-            o_rc = FAIL;
-            break;
-        }
-    }while(0);
-
+        PRDF_ERR( "[PlatServices::setVpdFailedLanes] rxHUID: 0x%08x "
+                  "txHUID: 0x%08x erepairSetFailedLanes failed",
+                  getHuid(i_rxBusTgt), getHuid(i_txBusTgt));
+        PRDF_COMMIT_ERRL( err, ERRL_ACTION_REPORT );
+        o_rc = FAIL;
+    }
     return o_rc;
 }
 
@@ -851,7 +811,7 @@ getDimmPlugCardType()
 */
 
 //##############################################################################
-//##                    Maintenance Command class wrapper
+//##                    Maintance Command class wrapper
 //##############################################################################
 
 mss_MaintCmdWrapper::mss_MaintCmdWrapper( mss_MaintCmd * i_maintCmd ) :

@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2004,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -31,7 +29,7 @@ namespace PRDF
 {
 
 /* void add_src()
- *         Add special SRC to error log specifying committed from smart
+ *         Add special SRC to error log specifying commited from smart
  *         pointer.
  */
 void ErrlSmartPtr::add_src()

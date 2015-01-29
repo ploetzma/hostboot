@@ -1460,6 +1460,7 @@ fapi::ReturnCode FindMRkeyword (const fapi::Target       & i_mbTarget,
             break;  //  break out with fapirc
         }
 
+
         uint8_t l_index = 0;
         l_fapirc = FAPI_ATTR_GET(ATTR_ISDIMM_MBVPD_INDEX,&i_mbTarget,
                                     l_index);
@@ -1472,6 +1473,7 @@ fapi::ReturnCode FindMRkeyword (const fapi::Target       & i_mbTarget,
         {
             FAPI_ERR("unsupported MBVPD index : 0x%02x",l_index);
             const uint8_t & M0_DATA = l_index;
+
             FAPI_SET_HWP_ERROR(l_fapirc, RC_MBVPD_INVALID_M0_DATA);
             break;
         }
@@ -1479,7 +1481,6 @@ fapi::ReturnCode FindMRkeyword (const fapi::Target       & i_mbTarget,
         o_keyword = fapi::MBVPD_KEYWORD_M1;
 
         uint8_t l_actualM0Data = l_m0_keyword[l_index];
-
         switch (l_actualM0Data)
         {
             case 1:

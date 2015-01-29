@@ -5,9 +5,7 @@
 #
 # OpenPOWER HostBoot Project
 #
-# Contributors Listed Below - COPYRIGHT 2012,2014
-# [+] International Business Machines Corp.
-#
+# COPYRIGHT International Business Machines Corp. 2012,2014
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +26,7 @@ MODULE = mbox
 OBJS += mboxdd.o
 OBJS += mailboxsp.o
 OBJS += mbox_dma_buffer.o
-OBJS += $(if $(CONFIG_VPO_COMPILE),,ipcSp.o)
+OBJS += ipcSp.o
 
 SUBDIRS += test.d
 

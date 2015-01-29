@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2010,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2010,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -28,7 +26,7 @@
 #include <stdint.h>
 // NOTE!. This file is included by linker.C and can't include non standard header files
 #ifndef LINKER_C
-// other includes not visible to the linker
+// other includes not visable to the linker
 #include <sys/task.h>
 #endif
 
@@ -36,7 +34,7 @@
 // make VFS_MODULE_MAX equal to the actual number of modules in the base image (+ 2?)
 #define VFS_MODULE_MAX 16
 #else
-#define VFS_MODULE_MAX 64
+#define VFS_MODULE_MAX 32
 #endif
 
 // Extended use 4 4k pages

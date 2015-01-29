@@ -45,17 +45,7 @@ namespace HBOCC {
      *
      * @return errlHndl_t  Error log if OCC load failed
      */
-    errlHndl_t activateOCCs();
-
-    /**
-     * @brief Stops OCCs on all Processors in the node
-     *        Function will attempt to stop all OCCs and commit
-     *        logs inline.  An error will only be returned for
-     *        very unexpected software fails.
-     *
-     * @return errlHndl_t  Error log if OCC load failed
-     */
-    errlHndl_t stopOCCs();
+    errlHndl_t activateOCC ();
 } //end OCC namespace
 
 #endif

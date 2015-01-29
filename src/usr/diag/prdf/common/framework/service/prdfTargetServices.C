@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2012,2014                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -25,7 +25,7 @@
 
 /**
  * @file prdfTargetServices.C
- * @brief PRD wrapper of targeting code
+ * @brief PRD wrapper of targetting code
  */
 
 //------------------------------------------------------------------------------

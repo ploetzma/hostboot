@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2011,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2011,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -127,7 +125,7 @@ void mm_tolerate_ue(uint64_t i_state)
     //       because the state is only used by the local HW thread which
     //       might be handling the machine check due to memory UE.  Any
     //       exception is a context synchronizing event which ensures
-    //       that all preceding instructions have completed, so there
+    //       that all preceeding instructions have completed, so there
     //       are no visible effects of instruction reordering with respect
     //       to this state change.
 }

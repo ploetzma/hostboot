@@ -5,7 +5,7 @@
 #
 # OpenPOWER HostBoot Project
 #
-# Contributors Listed Below - COPYRIGHT 2010,2015
+# Contributors Listed Below - COPYRIGHT 2010,2014
 # [+] Google Inc.
 # [+] International Business Machines Corp.
 #
@@ -34,8 +34,6 @@ SUBDIRS += usr.d
 SUBDIRS += build.d
 SUBDIRS += runtime.d
 
-# Reducing HB extended img size for VPO by disabling certain libs using
-# CONFIG_VPO_COMPILE option
 IMGS += hbicore
 IMGS += hbicore_test
 IMGS += hbirt
@@ -131,33 +129,33 @@ EXTENDED_MODULES += intr
 EXTENDED_MODULES += scan
 EXTENDED_MODULES += vpd
 EXTENDED_MODULES += dmi_training
-EXTENDED_MODULES += $(if $(CONFIG_VPO_COMPILE),,fapiporeve)
+EXTENDED_MODULES += fapiporeve
 EXTENDED_MODULES += poreve
 EXTENDED_MODULES += util
 EXTENDED_MODULES += tracedaemon
-EXTENDED_MODULES += $(if $(CONFIG_VPO_COMPILE),,sbe_centaur_init)
-EXTENDED_MODULES += $(if $(CONFIG_VPO_COMPILE),,mc_config)
-EXTENDED_MODULES += $(if $(CONFIG_VPO_COMPILE),,dram_training)
-EXTENDED_MODULES += $(if $(CONFIG_VPO_COMPILE),,mdia)
+EXTENDED_MODULES += sbe_centaur_init
+EXTENDED_MODULES += mc_config
+EXTENDED_MODULES += dram_training
+EXTENDED_MODULES += mdia
 EXTENDED_MODULES += mbox
 EXTENDED_MODULES += prdf
 EXTENDED_MODULES += bus_training
-EXTENDED_MODULES += $(if $(CONFIG_VPO_COMPILE),,activate_powerbus)
+EXTENDED_MODULES += activate_powerbus
 EXTENDED_MODULES += build_winkle_images
 EXTENDED_MODULES += core_activate
-EXTENDED_MODULES += $(if $(CONFIG_VPO_COMPILE),,dram_initialization)
+EXTENDED_MODULES += dram_initialization
 EXTENDED_MODULES += edi_ei_initialization
 EXTENDED_MODULES += establish_system_smp
 EXTENDED_MODULES += occ
 EXTENDED_MODULES += nest_chiplets
-EXTENDED_MODULES += $(if $(CONFIG_VPO_COMPILE),,start_payload)
+EXTENDED_MODULES += start_payload
 EXTENDED_MODULES += thread_activate
 EXTENDED_MODULES += slave_sbe
 EXTENDED_MODULES += attn
-EXTENDED_MODULES += $(if $(CONFIG_VPO_COMPILE),,runtime)
+EXTENDED_MODULES += runtime
 EXTENDED_MODULES += ibscom
-EXTENDED_MODULES += $(if $(CONFIG_VPO_COMPILE),,dump)
-EXTENDED_MODULES += $(if $(CONFIG_VPO_COMPILE),,tod_init)
+EXTENDED_MODULES += dump
+EXTENDED_MODULES += tod_init
 EXTENDED_MODULES += secureboot_ext
 EXTENDED_MODULES += devtree
 EXTENDED_MODULES += sbe
@@ -194,14 +192,14 @@ TESTCASE_MODULES += testvpd
 TESTCASE_MODULES += testpore
 TESTCASE_MODULES += testutil
 TESTCASE_MODULES += testmbox
-TESTCASE_MODULES += $(if $(CONFIG_VPO_COMPILE),,testmdia)
+TESTCASE_MODULES += testmdia
 TESTCASE_MODULES += testprdf
 TESTCASE_MODULES += testattn
 TESTCASE_MODULES += testscan
-TESTCASE_MODULES += $(if $(CONFIG_VPO_COMPILE),,testruntime)
+TESTCASE_MODULES += testruntime
 TESTCASE_MODULES += testibscom
-TESTCASE_MODULES += $(if $(CONFIG_VPO_COMPILE),,testdump)
-TESTCASE_MODULES += $(if $(CONFIG_VPO_COMPILE),,testsecureboot)
+TESTCASE_MODULES += testdump
+TESTCASE_MODULES += testsecureboot
 TESTCASE_MODULES += testfsiscom
 TESTCASE_MODULES += testrtloader
 TESTCASE_MODULES += testsbe
@@ -233,10 +231,9 @@ RUNTIME_MODULES += plat_rt
 RUNTIME_MODULES += build_winkle_images_rt
 RUNTIME_MODULES += occ_rt
 RUNTIME_MODULES += $(if $(CONFIG_HTMGT),htmgt_rt)
+RUNTIME_MODULES += $(if $(CONFIG_HBRT_PRD),prdf_rt)
 RUNTIME_MODULES += $(if $(CONFIG_HBRT_PRD),bus_training_rt)
 RUNTIME_MODULES += $(if $(CONFIG_HBRT_PRD),attn_rt)
-RUNTIME_MODULES += $(if $(CONFIG_HBRT_PRD),prdf_rt)
-RUNTIME_MODULES += pnor_rt
 
 RUNTIME_DATA_MODULES +=
 RUNTIME_TESTCASE_MODULES += cxxtest_rt
@@ -251,7 +248,6 @@ RUNTIME_TESTCASE_MODULES += testvpd_rt
 RUNTIME_TESTCASE_MODULES += testhwpf_rt
 RUNTIME_TESTCASE_MODULES += $(if $(CONFIG_HBRT_PRD),testprdf_rt)
 RUNTIME_TESTCASE_MODULES += $(if $(CONFIG_HBRT_PRD),testattn_rt)
-RUNTIME_TESTCASE_MODULES += testpnor_rt
 
 RELOCATABLE_IMAGE_LDFLAGS = -pie --export-dynamic
 
@@ -301,7 +297,6 @@ hbirt_OBJECTS += ${RUNTIME_OBJECTS}
 hbirt_OBJECTS += ${BASE_OBJECTS}
 hbirt_MODULES += ${RUNTIME_MODULES}
 hbirt_DATA_MODULES += ${RUNTIME_DATA_MODULES}
-hbirt_DATA_MODULES += $(if $(CONFIG_HBRT_PRD),$(prd_rule_prf_targets))
 hbirt_LDFLAGS = ${RELOCATABLE_IMAGE_LDFLAGS}
 
 hbirt_test_OBJECTS += ${hbirt_OBJECTS}

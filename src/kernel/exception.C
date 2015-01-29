@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2010,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2010,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -183,7 +181,7 @@ namespace ExceptionHandles
 
             // Check for 'nap' and skip over.  This avoids a task-crash
             // if for some reason we entered back into the task without
-            // privilege raised.
+            // priviledge raised.
             if (*instruction == 0x4c000364)
             {
                 printk("Error: Nap executed with lowered permissions on %d\n",
@@ -201,7 +199,7 @@ namespace ExceptionHandles
             {
 
                 // check to make sure previous instruction was a branch
-                //  if not, then we don't want to handle this exception
+                //  if not, then we don't want to handle ths exception
                 uint32_t* previous_instr =
                           (reinterpret_cast<uint32_t*>(phys_addr)) - 1;
                 if ( (*previous_instr & EXCEPTION_BRANCH_INSTR_MASK)

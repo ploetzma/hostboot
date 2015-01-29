@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2014,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2014                             */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -316,11 +316,11 @@ namespace SENSOR
     }
 
 
-    // given an array[][2] compare the sensor name, located in the first column,
-    // to the passed in key value
+    // given an array[][2] compare the number in the first column to the passed
+    // in key value
     static inline bool compare_it( uint16_t (&a)[2], uint16_t key )
     {
-        return  a[TARGETING::IPMI_SENSOR_ARRAY_NAME_OFFSET] < key;
+        return  a[0] < key;
     };
 
     /**
@@ -399,10 +399,10 @@ namespace SENSOR
     // Helper function to search the sensor data for the correct sensor number
     // based on the sensor name.
     //
-    uint8_t SensorBase::getSensorNumber()
+    uint16_t SensorBase::getSensorNumber()
     {
 
-        uint8_t l_sensor_number = INVALID_SENSOR;
+        uint16_t l_sensor_number = INVALID_SENSOR;
 
         if( iv_target == NULL )
         {
@@ -438,12 +438,10 @@ namespace SENSOR
             // we have not reached the end of the array and the iterator
             // returned from lower_bound is pointing to an entry which equals
             // the one we are searching for.
-            if( ( ptr != end ) &&
-               ( (*ptr)[TARGETING::IPMI_SENSOR_ARRAY_NAME_OFFSET] == iv_name ) )
+            if( ( ptr != end ) && ( (*ptr)[0] == iv_name ) )
             {
                 // found it
-                l_sensor_number =
-                    (*ptr)[TARGETING::IPMI_SENSOR_ARRAY_NUMBER_OFFSET];
+                l_sensor_number = (*ptr)[1];
 
                 TRACFCOMP(g_trac_ipmi,"Found sensor number %d for HUID=0x%x",
                           l_sensor_number, TARGETING::get_huid(iv_target));
@@ -531,16 +529,16 @@ namespace SENSOR
         {
             case TARGETING::TYPE_DIMM:
                 {
-                    iv_functionalOffset  = MEMORY_DEVICE_DISABLED;
-                    iv_presentOffset     = MEM_DEVICE_PRESENCE_DETECTED;
+                    iv_functionalOffset  = 0x04;
+                    iv_presentOffset     = 0x06;
                     break;
                 }
 
             case TARGETING::TYPE_PROC:
             case TARGETING::TYPE_CORE:
                 {
-                    iv_functionalOffset  = PROC_DISABLED;
-                    iv_presentOffset     = PROC_PRESENCE_DETECTED;
+                    iv_functionalOffset  = 0x08;
+                    iv_presentOffset     = 0x07;
                     break;
                 }
 
@@ -693,58 +691,6 @@ namespace SENSOR
 
         return pError;
     }
-
-    //
-    // OCC Active Sensor - uses occ target
-    //
-    //
-    OCCActiveSensor::OCCActiveSensor( TARGETING::Target * i_pTarget )
-        :SensorBase(TARGETING::SENSOR_NAME_OCC_ACTIVE, i_pTarget ),
-        iv_functionalOffset(PROC_DISABLED)
-    {
-
-    };
-
-    //
-    // OCCActiveSensor destructor
-    //
-    //
-    OCCActiveSensor::~OCCActiveSensor(){};
-
-    // Convert the input status to the correct sensor offset value, then
-    // send the message to the BMC to update the event status for this sensor.
-    errlHndl_t OCCActiveSensor::setState( OccStateEnum i_state )
-    {
-
-        errlHndl_t l_err = NULL;
-
-        uint16_t func_mask = setMask( iv_functionalOffset );
-
-        switch ( i_state )
-        {
-
-            case OCC_ACTIVE:
-                // turn off the disabled bit
-                iv_msg->iv_deassertion_mask = func_mask;
-            break;
-
-            case OCC_NOT_ACTIVE:
-                // assert the disabled bit
-                iv_msg->iv_assertion_mask = func_mask;
-                break;
-
-            default:
-                // assert that it is non-functional
-                iv_msg->iv_assertion_mask = func_mask;
-            break;
-        }
-
-            l_err = writeSensorData();
-
-
-        return l_err;
-
-    };
 
     //
     // HostStausSensor constructor - uses system target
@@ -930,64 +876,6 @@ namespace SENSOR
         updateBMCFaultSensorStatus();
     };
 
-    // returns a sensor number based on input target type
-    uint8_t getFaultSensorNumber( TARGETING::TargetHandle_t i_pTarget )
-    {
-
-        TARGETING::TYPE l_type = i_pTarget->getAttr<TARGETING::ATTR_TYPE>();
-
-        uint8_t l_sensor_number = INVALID_SENSOR;
-
-        switch( l_type )
-        {
-
-            case TARGETING::TYPE_PROC:
-            case TARGETING::TYPE_CORE:
-            case TARGETING::TYPE_DIMM:
-            {
-                l_sensor_number =  StatusSensor(i_pTarget).getSensorNumber();
-
-                break;
-            }
-
-            case TARGETING::TYPE_OSC:
-            case TARGETING::TYPE_OSCREFCLK:
-            case TARGETING::TYPE_OSCPCICLK:
-            {
-                TARGETING::TargetHandleList parentList;
-
-                // The clock fault sensors are associated with the NODE target
-                (void)getParentAffinityTargets (
-                        parentList, i_pTarget, TARGETING::CLASS_ENC,
-                        TARGETING::TYPE_NODE, false);
-
-                assert(parentList.size() == 1 );
-
-                TARGETING::TargetHandle_t l_node = parentList[0];
-
-                l_sensor_number =
-                    SENSOR::FaultSensor( l_node, l_type ).getSensorNumber();
-
-                break;
-            }
-
-            default:
-            {
-                TARGETING::TargetHandle_t l_sys;
-
-                // get the "system error sensor number" associated with the
-                // system target.
-                TARGETING::targetService().getTopLevelTarget(l_sys);
-
-                l_sensor_number = SENSOR::FaultSensor(
-                                 l_sys, TARGETING::TYPE_NA ).getSensorNumber();
-
-                break;
-            }
-
-        }
-
-        return l_sensor_number;
-    }
-
 }; // end name space
+
+

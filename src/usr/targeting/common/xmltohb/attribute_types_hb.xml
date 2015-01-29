@@ -763,7 +763,6 @@
     <readable/>
     <writeable/>
 </attribute>
-
 <attribute>
     <id>OPAL_MODEL</id>
     <description>
@@ -800,5 +799,4 @@
         <macro>DIRECT</macro>
     </hwpfToHbAttrMap>
 </attribute>
-
 </attributes>

@@ -5,7 +5,7 @@
 <!--                                                                        -->
 <!-- OpenPOWER HostBoot Project                                             -->
 <!--                                                                        -->
-<!-- Contributors Listed Below - COPYRIGHT 2012,2015                        -->
+<!-- Contributors Listed Below - COPYRIGHT 2012,2014                        -->
 <!-- [+] International Business Machines Corp.                              -->
 <!--                                                                        -->
 <!--                                                                        -->
@@ -407,12 +407,12 @@
         <value>0x0e00</value>
     </enumerator>
     <enumerator>
-        <name>FAULT</name>
-        <value>0x1000</value>
+        <name>POWER</name>
+        <value>0x0f00</value>
     </enumerator>
     <enumerator>
-        <name>APSS_FAULT</name> <!-- APSS Fault -->
-        <value>0x1010</value>
+        <name>FAULT</name>
+        <value>0x1000</value>
     </enumerator>
     <enumerator>
         <name>TOD_CLOCK_FAULT</name>
@@ -426,11 +426,6 @@
         <name>PCI_CLOCK_FAULT</name>
         <value>0x101B</value>
     </enumerator>
-    <enumerator>
-        <name>APSS_CHANNEL</name> <!-- Power sensors -->
-        <value>0x1100</value>     <!-- 16 channels -->
-    </enumerator>
-
 </enumerationType>
 
 <enumerationType>
@@ -1223,6 +1218,10 @@ ID for the sensor number returned with the elog. -->
        <name>HOSTSVC_HBEL</name>
        <value>0x00000008</value>
     </enumerator>
+    <enumerator>
+       <name>DIMM_POWER_TEST</name>
+       <value>0x00000010</value>
+   </enumerator>
 </enumerationType>
 
 <!-- For POD Testing -->
@@ -15058,291 +15057,9 @@ firmware notes: Platforms should initialize this attribute to AUTO (0)</descript
     <readable/>
 </attribute>
 
-<attribute>
-    <id>ISTEP_PAUSE_ENABLE</id>
-    <description>
-      Used to enable pause/stop in between isteps. This attribute is set via
-      attribute override.
-    </description>
-    <simpleType>
-        <uint8_t></uint8_t>
-    </simpleType>
-    <persistency>volatile-zeroed</persistency>
-    <readable/>
-    <writeable/>
-</attribute>
-
-<attribute>
-    <id>ISTEP_PAUSE_CONFIG</id>
-    <description>
-      Used to configure the parameters for enabling pause/stop between
-      isteps. This attribute is set via attribute override.
-    </description>
-    <simpleType>
-        <uint64_t></uint64_t>
-    </simpleType>
-    <persistency>volatile-zeroed</persistency>
-    <readable/>
-    <writeable/>
-</attribute>
-
-<attribute>
-    <id>MFG_TRACE_ENABLE</id>
-    <description>
-        Override this to a non-zero value to have the FAPI manufacturing
-        traces output to the console or go to a fsp trace buffer when
-        console not enabled.
-    </description>
-    <simpleType><uint8_t></uint8_t></simpleType>
-    <persistency>volatile-zeroed</persistency>
-    <readable/>
-    <hwpfToHbAttrMap>
-        <id>ATTR_MFG_TRACE_ENABLE</id>
-        <macro>DIRECT</macro>
-    </hwpfToHbAttrMap>
-</attribute>
-
-<!-- === Manufacturing threshold Attributes of PRD === -->
-
-<attribute>
-    <id>MNFG_TH_P8EX_L2_CACHE_CES</id>
-    <description>
-      This attribute represents the Maximum number of L2 Cache CEs allowed
-      during Manufacturing.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>MNFG_TH_P8EX_L2_DIR_CES</id>
-    <description>
-      This attribute represents the Maximum number of L2 Directory CEs allowed
-      during Manufacturing.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>MNFG_TH_P8EX_L3_CACHE_CES</id>
-    <description>
-      This attribute represents the Maximum number of L3 Cache CEs allowed
-      during Manufacturing.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>MNFG_TH_P8EX_L3_DIR_CES</id>
-    <description>
-      This attribute represents the Maximum number of L3 Directory CEs allowed
-      during Manufacturing.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>FIELD_TH_P8EX_L2_LINE_DELETES</id>
-    <description>
-      This attribute represents the Maximum number of L2 Line Deletes allowed
-      in the Field.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>FIELD_TH_P8EX_L3_LINE_DELETES</id>
-    <description>
-      This attribute represents the Maximum number of L3 Line Deletes allowed
-      in the Field.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>FIELD_TH_P8EX_L2_COL_REPAIRS</id>
-    <description>
-      This attribute represents the Maximum number of L2 Column Repairs allowed
-      in the Field.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>FIELD_TH_P8EX_L3_COL_REPAIRS</id>
-    <description>
-      This attribute represents the Maximum number of L3 Column Repairs allowed
-      in the Field.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>MNFG_TH_P8EX_L2_LINE_DELETES</id>
-    <description>
-      This attribute represents the Maximum number of L2 Line Deletes allowed
-      during Manufacturing.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>MNFG_TH_P8EX_L3_LINE_DELETES</id>
-    <description>
-      This attribute represents the Maximum number of L3 Line Deletes allowed
-      during Manufacturing.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>MNFG_TH_P8EX_L2_COL_REPAIRS</id>
-    <description>
-      This attribute represents the Maximum number of L2 Column Repairs allowed
-      during Manufacturing.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>MNFG_TH_P8EX_L3_COL_REPAIRS</id>
-    <description>
-      This attribute represents the Maximum number of L3 Column Repairs allowed
-      during Manufacturing.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>MNFG_TH_CEN_MBA_RT_SOFT_CE_TH_ALGO</id>
-    <description>
-      This attribute represents the Base threshold (for 2GB DRAM ) of
-      Memory CEs allowed during runtime.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>MNFG_TH_CEN_MBA_IPL_SOFT_CE_TH_ALGO</id>
-    <description>
-      This attribute represents the Base threshold (for 2GB DRAM ) of
-      Memory CEs allowed during IPL.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>MNFG_TH_CEN_MBA_RT_RCE_PER_RANK</id>
-    <description>
-      This attribute represents the maximum number of Memory RCEs
-      allowed per Rank during runtime.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<attribute>
-    <id>MNFG_TH_CEN_L4_CACHE_CES</id>
-    <description>
-      This attribute represents the maximum number of L4 Cache CEs allowed.
-      creator: platform (generated based on MRW data)
-    </description>
-    <simpleType>
-      <uint8_t>
-      </uint8_t>
-    </simpleType>
-    <persistency>non-volatile</persistency>
-    <readable/>
-</attribute>
-
-<!-- === Manufacturing threshold Attributes of PRD === -->
-
 </attributes>
+
+
+
+
+

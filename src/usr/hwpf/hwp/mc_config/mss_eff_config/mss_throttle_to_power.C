@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2012,2014                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -22,7 +22,7 @@
 /* permissions and limitations under the License.                         */
 /*                                                                        */
 /* IBM_PROLOG_END_TAG                                                     */
-// $Id: mss_throttle_to_power.C,v 1.18 2014/11/06 21:07:04 pardeik Exp $
+// $Id: mss_throttle_to_power.C,v 1.17 2014/10/16 13:42:02 pardeik Exp $
 // $Source: /afs/awd/projects/eclipz/KnowledgeBase/.cvsroot/eclipz/chips/
 //          centaur/working/procedures/ipl/fapi/mss_throttle_to_power.C,v $
 //------------------------------------------------------------------------------
@@ -49,8 +49,6 @@
 //------------------------------------------------------------------------------
 // Version:|  Author: |  Date:  | Comment:
 //---------|----------|---------|-----------------------------------------------
-//   1.18  | pardeik  |06-NOV-14| removed string in trace statement
-//         |          |         | changed FAPI_IMP to FAPI_INF
 //   1.17  | pardeik  |16-OCT-14| removed l_dimm_power_array_integer to fix
 //         |          |         |  cronus 64bit compile error
 //   1.16  | pardeik  |15-OCT-14| remove attr writing for ATTR_MSS_DIMM_MAXPOWER
@@ -131,7 +129,9 @@ extern "C" {
     {
 	fapi::ReturnCode rc = fapi::FAPI_RC_SUCCESS;
 
-	FAPI_INF("*** Running mss_throttle_to_power ***");
+	const char* procedure_name = "mss_throttle_to_power";
+
+	FAPI_IMP("*** Running %s ***", procedure_name);
 
 	uint32_t throttle_n_per_mba;
 	uint32_t throttle_n_per_chip;
@@ -172,7 +172,7 @@ extern "C" {
 	    return rc;
 	}
 
-	FAPI_INF("*** mss_throttle_to_power COMPLETE ***");
+	FAPI_IMP("*** %s COMPLETE ***", procedure_name);
 	return rc;
 
     }
@@ -206,7 +206,9 @@ extern "C" {
     {
 	fapi::ReturnCode rc = fapi::FAPI_RC_SUCCESS;
 
-	FAPI_INF("*** Running mss_throttle_to_power_calc ***");
+	const char* procedure_name = "mss_throttle_to_power_calc";
+
+	FAPI_IMP("*** Running %s ***", procedure_name);
 
 	const uint8_t MAX_NUM_PORTS = 2;
 	const uint8_t MAX_NUM_DIMMS = 2;
@@ -467,7 +469,7 @@ extern "C" {
 	    return rc;
 	}
 
-	FAPI_INF("*** mss_throttle_to_power_calc COMPLETE ***");
+	FAPI_IMP("*** %s COMPLETE ***", procedure_name);
 	return rc;
     }
 

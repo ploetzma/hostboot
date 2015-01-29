@@ -5,9 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2012,2015                        */
-/* [+] International Business Machines Corp.                              */
-/*                                                                        */
+/* COPYRIGHT International Business Machines Corp. 2011,2014              */
 /*                                                                        */
 /* Licensed under the Apache License, Version 2.0 (the "License");        */
 /* you may not use this file except in compliance with the License.       */
@@ -575,7 +573,7 @@ class TargetService
          *
          *  @post See "return"
          *
-         *  @return void would fill up the vectore references with complete
+         *  @return void would fill up the vectore refernce with complete
          *  section data in pages.
          *
          */
@@ -807,9 +805,9 @@ class TargetService
          *  the routine will return the next set of targets in the physical
          *  hierarchy.  Conversely if the caller asks for ALL children targets
          *  for said source target, the routine will return all targets
-         *  contained within the processor chip.  All searching is performed as
-         *  a depth first search.  This routine will not clear the caller's
-         *  input list when returning results.
+         *  contained within the processor chip.  All searching is peformed as a
+         *  depth first search.  This routine will not clear the caller's input
+         *  list when returning results.
          *
          *  @param[out] o_list List of target handles that match the specified
          *      criteria, not cleared by this function.

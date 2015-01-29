@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2014,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2014                             */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -48,7 +48,6 @@ namespace IPMI
         RC_EVENT_DATA_NOT_SETTABLE   = IPMI_COMP_ID | 0x08,
         RC_SENSOR_NOT_PRESENT        = IPMI_COMP_ID | 0x09,
         RC_SET_SENSOR_FAILURE        = IPMI_COMP_ID | 0x0a,
-        RC_READ_EVENT_FAILURE        = IPMI_COMP_ID | 0x0b,
 
     };
 };

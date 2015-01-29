@@ -239,25 +239,6 @@ push @systemAttr,
     "REDUNDANT_CLOCKS", $reqPol->{'redundant-clocks'},
     "MSS_DRAMINIT_RESET_DISABLE", $reqPol->{'mss_draminit_reset_disable'},
     "MRW_POWER_CONTROL_REQUESTED", (uc $reqPol->{'mem_power_control_usage'}),
-    "MNFG_TH_P8EX_L2_CACHE_CES", $reqPol->{'mnfg_th_p8ex_l2_cache_ces'},
-    "MNFG_TH_P8EX_L2_DIR_CES", $reqPol->{'mnfg_th_p8ex_l2_dir_ces'},
-    "MNFG_TH_P8EX_L3_CACHE_CES", $reqPol->{'mnfg_th_p8ex_l3_cache_ces'},
-    "MNFG_TH_P8EX_L3_DIR_CES", $reqPol->{'mnfg_th_p8ex_l3_dir_ces'},
-    "FIELD_TH_P8EX_L2_LINE_DELETES", $reqPol->{'field_th_p8ex_l2_line_deletes'},
-    "FIELD_TH_P8EX_L3_LINE_DELETES", $reqPol->{'field_th_p8ex_l3_line_deletes'},
-    "FIELD_TH_P8EX_L2_COL_REPAIRS", $reqPol->{'field_th_p8ex_l2_col_repairs'},
-    "FIELD_TH_P8EX_L3_COL_REPAIRS", $reqPol->{'field_th_p8ex_l3_col_repairs'},
-    "MNFG_TH_P8EX_L2_LINE_DELETES", $reqPol->{'mnfg_th_p8ex_l2_line_deletes'},
-    "MNFG_TH_P8EX_L3_LINE_DELETES", $reqPol->{'mnfg_th_p8ex_l3_line_deletes'},
-    "MNFG_TH_P8EX_L2_COL_REPAIRS", $reqPol->{'mnfg_th_p8ex_l2_col_repairs'},
-    "MNFG_TH_P8EX_L3_COL_REPAIRS", $reqPol->{'mnfg_th_p8ex_l3_col_repairs'},
-    "MNFG_TH_CEN_MBA_RT_SOFT_CE_TH_ALGO",
-                                $reqPol->{'mnfg_th_cen_mba_rt_soft_ce_th_algo'},
-    "MNFG_TH_CEN_MBA_IPL_SOFT_CE_TH_ALGO",
-                               $reqPol->{'mnfg_th_cen_mba_ipl_soft_ce_th_algo'},
-    "MNFG_TH_CEN_MBA_RT_RCE_PER_RANK",
-                                   $reqPol->{'mnfg_th_cen_mba_rt_rce_per_rank'},
-    "MNFG_TH_CEN_L4_CACHE_CES", $reqPol->{'mnfg_th_cen_l4_cache_ces'},
 ];
 
 if ($reqPol->{'mba_cacheline_interleave_mode_control'} eq 'required')
@@ -2168,15 +2149,15 @@ sub generate_sys
     <attribute>
         <id>IPMI_SENSORS</id>
         <default>
-            0x0700,0x07,  <!-- OS_Boot -->
-            0x0800,0x04,  <!-- Host_Status -->
-            0x0900,0x05,  <!-- FW_Boot_Progress -->
-            0x0b00,0x09,  <!-- Power_Cap  -->
-            0x0c00,0x06,  <!-- PCI -->
-            0x0d00,0x00,  <!-- Boot_watchdog -->
-            0x0e00,0x85,  <!-- Reboot_Count -->
-            0x1000,0x82,  <!-- System_Event -->
-            0x1010,0x83,  <!-- APSS Fault -->
+            0x0700,0x07,
+            0x0800,0x04,
+            0x0900,0x05,
+            0x0a00,0x08,
+            0x0b00,0x09,
+            0x0c00,0x06,
+            0x0d00,0x00,
+            0x0e00,0xFF,
+            0x0F00,0xFF,
             0xFFFF,0xFF,
             0xFFFF,0xFF,
             0xFFFF,0xFF,
@@ -2615,10 +2596,10 @@ sub generate_system_node
     <attribute>
         <id>IPMI_SENSORS</id>
         <default>
-            0x1000,0x80, <!-- Backplane fault sensor -->
-            0x1017,0x14, <!-- TOD clock fault sensor -->
-            0x101A,0x15, <!-- REF clock fault sensor -->
-            0x101B,0x16, <!-- PCI clock fault sensor -->
+            0x1017,0x14,
+            0x101A,0x15,
+            0x101B,0x16,
+            0xFFFF,0xFF,
             0xFFFF,0xFF,
             0xFFFF,0xFF,
             0xFFFF,0xFF,
@@ -2921,14 +2902,28 @@ sub generate_proc
     # Calculate the FSP and PSI BRIGDE BASE ADDR
     my $fspBase = 0;
     my $psiBase = 0;
-    foreach my $i (@{$psiBus->{'psi-bus'}})
+    if (!$haveFSPs)
     {
-        if (($i->{'processor'}->{target}->{position} eq $proc) &&
-            ($i->{'processor'}->{target}->{node} eq $node ))
+        foreach my $mp (@mprocs)
         {
-            $fspBase = 0x0003FFE000000000 + 0x400000000*$lognode + 0x100000000*$logid;
-            $psiBase = 0x0003FFFE80000000 + 0x400000*$psichip + 0x100000*$psilink;
-            last;
+            if ($mp eq "n${node}:p$proc")
+            {
+                $psiBase = 0x0003FFFE80000000 + 0x100000*$psilink;
+                last;
+            }
+        }
+    }
+    else
+    {
+        foreach my $i (@{$psiBus->{'psi-bus'}})
+        {
+            if (($i->{'processor'}->{target}->{position} eq $proc) &&
+                ($i->{'processor'}->{target}->{node} eq $node ))
+            {
+                $fspBase = 0x0003FFE000000000 + 0x400000000*$lognode + 0x100000000*$logid;
+                $psiBase = 0x0003FFFE80000000 + 0x400000*$psichip + 0x100000*$psilink;
+                last;
+            }
         }
     }
 
@@ -3186,8 +3181,8 @@ sub generate_proc
     <attribute>
         <id>IPMI_SENSORS</id>
         <default>
-            0x0100, 0x12, <!-- Temperature sensor -->
-            0x0500, 0x03, <!-- State sensor -->
+            0x0100, 0x12,
+            0x0500, 0x03,
             0xFFFF, 0xFF,
             0xFFFF, 0xFF,
             0xFFFF, 0xFF,
@@ -3291,8 +3286,8 @@ sub generate_ex_core
     <attribute>
         <id>IPMI_SENSORS</id>
          <default>
-             0x0100, 0x13, <!-- Temperature sensor -->
-             0x0500, 0x02, <!-- State sensor -->
+             0x0100, 0x13,
+             0x0500, 0x02,
              0xFFFF, 0xFF,
              0xFFFF, 0xFF,
              0xFFFF, 0xFF,
@@ -4118,8 +4113,8 @@ sub generate_centaur
     <attribute>
         <id>IPMI_SENSORS</id>
         <default>
-            0x0100, 0x12,  <!-- Temperature sensor -->
-            0x0500, 0x01,  <!-- State sensor -->
+            0x0100, 0xFF,
+            0x0500, 0xFF,
             0xFFFF, 0xFF,
             0xFFFF, 0xFF,
             0xFFFF, 0xFF,
@@ -4147,8 +4142,6 @@ sub generate_centaur
 
         # add I2C_BUS_SPEED_ARRAY attribute
         addI2cBusSpeedArray($sys, $node, $ctaur, "memb");
-    }
-
     if($useGpioToEnableVddr)
     {
         my $vddrKey = "n" . $node . "p" . $ctaur;
@@ -4440,8 +4433,8 @@ sub generate_is_dimm
     <attribute>
         <id>IPMI_SENSORS</id>
         <default>
-            0x0100, 0x13,  <!-- Temperature sensor -->
-            0x0500, 0x01,  <!-- State sensor -->
+            0x0100, 0xFF,
+            0x0500, 0x01,
             0xFFFF, 0xFF,
             0xFFFF, 0xFF,
             0xFFFF, 0xFF,
@@ -4610,8 +4603,8 @@ sub generate_dimm
     <attribute>
         <id>IPMI_SENSORS</id>
         <default>
-            0x0100, 0x13,  <!-- Temperature sensor -->
-            0x0500, 0x01,  <!-- State sensor -->
+            0x0100, 0xFF,
+            0x0500, 0x01,
             0xFFFF, 0xFF,
             0xFFFF, 0xFF,
             0xFFFF, 0xFF,
@@ -4692,13 +4685,10 @@ sub init_apss
         {
             if($getBaseRidApss == 0)  # TODO RTC 116460 FSP only
             {
-                if ($i->{endpoint}->{'instance-path'} =~ /.*APSS-[0-9]+$/i)
-                {
-                    my $locCode = $i->{endpoint}->{'location-code'};
-                    my @locCodeComp = split( '-', $locCode );
-                    $ridApssBase = (@locCodeComp > 2) ? 0x4900 : 0x800;
-                    $getBaseRidApss = 1;
-                }
+                my $locCode = $i->{endpoint}->{'location-code'};
+                my @locCodeComp = split( '-', $locCode );
+                $ridApssBase = (@locCodeComp > 2) ? 0x4900 : 0x800;
+                $getBaseRidApss = 1;
             }
 
             if ($i->{endpoint}->{'instance-path'} =~ /.*APSS-[0-9]+$/i)
@@ -4826,38 +4816,8 @@ sub generate_occ
     <attribute>
         <id>OCC_MASTER_CAPABLE</id>
         <default>$mastercapable</default>
-    </attribute>\n";
-
-    # $TODO RTC:110399
-    # hardcode for now both palmetto and habenaro are
-    # currently the same - this will change though
-    #
-    if( $haveFSPs == 0 )
-    {
-       print "\n<!-- IPMI sensor numbers -->
-    <attribute>
-        <id>IPMI_SENSORS</id>
-        <default>
-            0x0a00, 0x08, <!-- Occ_active -->
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF,
-            0xFFFF, 0xFF
-       </default>
-    </attribute>\n";
-    }
-print "</targetInstance>\n";
+    </attribute>
+</targetInstance>\n";
 
 }
 
@@ -5353,10 +5313,9 @@ sub addI2cBusSpeedArray
              ($tmp_speed < $speed_array[$tmp_offset] ) )
         {
             $speed_array[$tmp_offset] = $tmp_speed;
-
         }
-
     }
+
     print "     <attribute>\n";
     print "        <id>I2C_BUS_SPEED_ARRAY</id>\n";
     print "        <default>\n";

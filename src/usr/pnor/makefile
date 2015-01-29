@@ -5,7 +5,7 @@
 #
 # OpenPOWER HostBoot Project
 #
-# Contributors Listed Below - COPYRIGHT 2011,2015
+# Contributors Listed Below - COPYRIGHT 2011,2014
 # [+] Google Inc.
 # [+] International Business Machines Corp.
 #
@@ -28,7 +28,6 @@ MODULE = pnor
 
 OBJS += pnorrp.o
 OBJS += pnordd.o
-OBJS += pnor_common.o
 OBJS += pnorvalid.o
 OBJS += ecc.o
 OBJS += sfcdd.o
@@ -43,6 +42,5 @@ OBJS += $(if $(CONFIG_ALLOW_MICRON_PNOR),nor_micron.o)
 
 
 SUBDIRS += test.d
-SUBDIRS += runtime.d
 
 include ${ROOTPATH}/config.mk
