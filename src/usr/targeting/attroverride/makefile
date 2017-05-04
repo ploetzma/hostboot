@@ -51,6 +51,6 @@ vpath %.H $(GENDIR)
 
 $(OUT_FILE): $(C_FILES) $(H_FILES)
 	$(C2) "    CC         $(notdir $@)"
-	$(C1)$(CCACHE) $(HOST_PREFIX)g++ -std=gnu++11 -O3 -g -o $(OUT_FILE)\
+	$(C1)$(CCACHE) /opt/rh/devtoolset-2/root/usr/bin/g++ -std=gnu++11 -O3 -g -o $(OUT_FILE)\
 			$(foreach dir,$(INC_DIRS), -I $(dir)) -iquote.\
 			$(foreach file,$^,$(if $(findstring .H,$(file)),,$(file)))
